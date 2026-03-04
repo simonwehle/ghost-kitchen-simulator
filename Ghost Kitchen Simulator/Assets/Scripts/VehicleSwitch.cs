@@ -54,11 +54,18 @@ public class VehicleSwitch : MonoBehaviour
 
     void ExitCar()
     {
+        Vector3 exitOffset = car.transform.right * 2f;
+        Vector3 exitPosition = car.transform.position + exitOffset + Vector3.up * 0.5f;
+
+        player.transform.position = exitPosition;
         player.transform.rotation = Quaternion.Euler(0, car.transform.eulerAngles.y, 0);
+
         playerController.enabled = true;
         playerVisual.enabled = true;
         playerCamRoot.SetActive(true);
         playerCamera.SetParent(player.transform);
+        //playerCamera.localPosition = Vector3.zero;
+        //playerCamera.localRotation = Quaternion.identity;
 
         carController.enabled = false;
         carController.canDrive= false;

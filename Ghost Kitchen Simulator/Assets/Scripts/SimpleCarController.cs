@@ -24,14 +24,14 @@ public class SimpleCarController : MonoBehaviour
         float turn = 0f;
 
         // WASD
-        if (Keyboard.current.wKey.isPressed) move += 0.8f;
+        if (Keyboard.current.wKey.isPressed) move += 0.7f;
         if (Keyboard.current.sKey.isPressed) move -= 0.2f;
-        if (Keyboard.current.aKey.isPressed) turn -= 0.8f;
+        if (Keyboard.current.aKey.isPressed) turn -= 0.5f;
         if (Keyboard.current.dKey.isPressed) turn += 0.2f;
 
         // Pfeiltasten
-        if (Keyboard.current.upArrowKey.isPressed) move += 0.8f;
-        if (Keyboard.current.downArrowKey.isPressed) move -= 0.8f;
+        if (Keyboard.current.upArrowKey.isPressed) move += 0.7f;
+        if (Keyboard.current.downArrowKey.isPressed) move -= 0.5f;
         if (Keyboard.current.leftArrowKey.isPressed) turn -= 0.2f;
         if (Keyboard.current.rightArrowKey.isPressed) turn += 0.2f;
 
