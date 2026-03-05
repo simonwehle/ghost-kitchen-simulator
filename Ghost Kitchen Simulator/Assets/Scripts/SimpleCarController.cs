@@ -25,8 +25,8 @@ public class SimpleCarController : MonoBehaviour
 
         // WASD
         if (Keyboard.current.wKey.isPressed) move += 0.7f;
-        if (Keyboard.current.sKey.isPressed) move -= 0.2f;
-        if (Keyboard.current.aKey.isPressed) turn -= 0.5f;
+        if (Keyboard.current.sKey.isPressed) move -= 0.5f;
+        if (Keyboard.current.aKey.isPressed) turn -= 0.2f;
         if (Keyboard.current.dKey.isPressed) turn += 0.2f;
 
         // Pfeiltasten
