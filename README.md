@@ -33,5 +33,5 @@ The player starts as a delivery driver for an established food chain and gradual
 
 ---
 
-You can find more information and updates about the project progress (here)[https://github.com/simonwehle/ghost-kitchen-simulator/discussions/categories/show-and-tell] in our blog.<br>
-We agreed on certain standards concerning the use of AI. You can review our policy (here)[https://github.com/simonwehle/ghost-kitchen-simulator/wiki/AI-Policy].
+You can find more information and updates about the project progress [here](https://github.com/simonwehle/ghost-kitchen-simulator/discussions/categories/show-and-tell) in our blog.<br>
+We agreed on certain standards concerning the use of AI. You can review our policy [here](https://github.com/simonwehle/ghost-kitchen-simulator/wiki/AI-Policy).
