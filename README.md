@@ -33,17 +33,5 @@ The player starts as a delivery driver for an established food chain and gradual
 
 ---
 
-## Next Steps (until March 6)
-
-* Implement first playable level with a kitchen where pizza can be prepared
-* Develop a coop prototype/look into multiplayer possibilities
-* Set up a development blog (WordPress or GitHub Pages) & pusblish first update
-
-### MVP for working prototype delivery
-
-Development begins with the **restaurant kitchen**:
-
-* Kitchen environment
-* Basic order system
-* Order is handed to a counter to complete
-* Playable cooking loop of preparing the first dish (pizza)
+You can find more information and updates about the project progress (here)[https://github.com/simonwehle/ghost-kitchen-simulator/discussions/categories/show-and-tell] in our blog.<br>
+We agreed on certain standards concerning the use of AI. You can review our policy (here)[https://github.com/simonwehle/ghost-kitchen-simulator/wiki/AI-Policy].
