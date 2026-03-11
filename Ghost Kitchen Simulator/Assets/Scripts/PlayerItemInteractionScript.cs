@@ -28,6 +28,14 @@ public class PlayerInteraction : MonoBehaviour
                 Debug.Log("E-Taste gedrückt, versuche abzulegen...");
             }
         }
+        if (Keyboard.current.qKey.wasPressedThisFrame) 
+        {
+            if (currentItem != null)
+            {
+                ThrowItem();
+                Debug.Log("Q-Taste gedrückt, versuche zu werfen...");
+            }
+        }
     }
 
     void TryPickUp()
@@ -50,9 +58,18 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (currentItem != null)
         {
-            currentItem.Drop(throwForce);
+            currentItem.Drop(1f);
             currentItem = null;
             Debug.Log("Gegenstand abgelegt.");
+        }
+    }
+    void ThrowItem()
+    {
+        if (currentItem != null)
+        {
+            currentItem.Drop(throwForce);
+            currentItem = null;
+            Debug.Log("Gegenstand geworfen.");
         }
     }
 }
