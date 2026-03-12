@@ -58,16 +58,17 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (currentItem != null)
         {
-            currentItem.Drop(1f);
+            currentItem.Drop(transform.forward, 2f);
             currentItem = null;
             Debug.Log("Gegenstand abgelegt.");
         }
     }
+
     void ThrowItem()
     {
         if (currentItem != null)
         {
-            currentItem.Drop(throwForce);
+            currentItem.Drop(transform.forward, throwForce);
             currentItem = null;
             Debug.Log("Gegenstand geworfen.");
         }

@@ -16,16 +16,23 @@ public class Item : MonoBehaviour
         rb.isKinematic = true; 
         col.enabled = false;   
         transform.SetParent(holdPoint);
-        transform.localPosition = Vector3.zero;
+
+        Vector3 visualCenterOffset = Vector3.zero;
+        if (GetComponent<Renderer>() != null)
+        {
+            visualCenterOffset = GetComponent<Renderer>().localBounds.center;
+        }
+        
+        transform.localPosition = -visualCenterOffset;
         transform.localRotation = Quaternion.identity;
     }
 
-    public void Drop(float throwForce = 2f)
+    public void Drop(Vector3 forceDirection, float force)
     {
         rb.isKinematic = false;
         col.enabled = true;
         transform.SetParent(null);
         
-        rb.AddForce(transform.forward * throwForce, ForceMode.Impulse);
+        rb.AddForce(forceDirection * force, ForceMode.Impulse);
     }
 }
