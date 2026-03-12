@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6358925209486892788}
   - component: {fileID: 6358925209486892791}
   - component: {fileID: 6358925209486892790}
+  - component: {fileID: 1185217859713289857}
   m_Layer: 0
   m_Name: Road 2-Lane Ground
   m_TagString: Untagged
@@ -167,3 +168,17 @@ MonoBehaviour:
     uvOffset: {x: 0, y: 1}
   autoGenerate: 1
   SourceMesh: {fileID: -5754084199372789682, guid: fb8c854178bd4bb42bb7c7197d99c036, type: 3}
+--- !u!114 &1185217859713289857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6358925209486892784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2167b884cb4b3b1458735dc732248998, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DynamischeRoadVolumes
+  volumePrefab: {fileID: 5096784593756756117, guid: 1c4f8156097df654f9c23deb9c3a51df, type: 3}
+  abstand: 5
