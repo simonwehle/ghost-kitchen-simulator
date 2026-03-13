@@ -5,7 +5,7 @@ public class Item : MonoBehaviour
     private Rigidbody rb;
     private Collider col;
 
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
