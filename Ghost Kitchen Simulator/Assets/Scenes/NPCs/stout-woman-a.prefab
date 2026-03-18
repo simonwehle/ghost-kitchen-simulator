@@ -91,7 +91,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -117,10 +117,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPC_StadtLeben
   agent: {fileID: -3091306049556619842}
   animator: {fileID: 4810077328907177692}
-  hausTuer: {fileID: 0}
-  wegpunkte: []
-  wartezeitImHaus: 5
-  zeitDraussenBisHeimweg: 20
+  meinHaus: {fileID: 0}
+  wegpunktContainer: {fileID: 0}
+  minWartezeitHaus: 30
+  maxWartezeitHaus: 120
+  aktuellerStatus: 0
+  minWanderZeit: 30
+  maxWanderZeit: 120
 --- !u!114 &-8677005802645639293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,7 +144,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2263955604548718108}
   serializedVersion: 5
-  m_Mass: 1
+  m_Mass: 120
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}

@@ -11,7 +11,12 @@ public class NPC_StadtLeben : MonoBehaviour
     public NavMeshAgent agent;
     public Animator animator;
     [HideInInspector] public HouseManager meinHaus;
-    public List<Transform> wegpunkte;
+    
+    // NEU: Das Parent-Objekt, das alle Wegpunkte als Kinder hat
+    public Transform wegpunktContainer;
+    
+    // Die Liste wird nun intern befüllt, wir behalten sie für die Logik bei
+    private List<Transform> wegpunkte = new List<Transform>();
 
     [Header("Einstellungen")]
     public float minWartezeitHaus = 10f;
@@ -19,8 +24,8 @@ public class NPC_StadtLeben : MonoBehaviour
     public NPCStatus aktuellerStatus = NPCStatus.ImHaus;
 
     [Header("Wander-Einstellungen")]
-public float minWanderZeit = 30f; // Mindestens 30 Sekunden wandern
-public float maxWanderZeit = 60f; // Maximal 60 Sekunden wandern
+    public float minWanderZeit = 30f; 
+    public float maxWanderZeit = 60f; 
 
     private Renderer[] allRenderers;
     private Collider[] allColliders;
@@ -32,6 +37,31 @@ public float maxWanderZeit = 60f; // Maximal 60 Sekunden wandern
         animator = GetComponent<Animator>();
         allRenderers = GetComponentsInChildren<Renderer>();
         allColliders = GetComponentsInChildren<Collider>();
+
+        // Wegpunkte automatisch aus dem Container laden
+        SetupWegpunkte();
+    }
+
+    // Hilfsfunktion zum Einlesen der Kinder
+    private void SetupWegpunkte()
+    {
+        if (wegpunktContainer != null)
+        {
+            wegpunkte.Clear();
+            foreach (Transform child in wegpunktContainer)
+            {
+                wegpunkte.Add(child);
+            }
+            
+            if (wegpunkte.Count == 0)
+            {
+                Debug.LogWarning($"Der Wegpunkt-Container auf {gameObject.name} hat keine Kinder!");
+            }
+        }
+        else
+        {
+            Debug.LogError($"Bitte weise dem NPC {gameObject.name} einen Wegpunkt-Container zu!");
+        }
     }
 
     void Start() { StartCoroutine(NPCRoutine()); }
@@ -73,11 +103,9 @@ public float maxWanderZeit = 60f; // Maximal 60 Sekunden wandern
 
             if (aktuellerStatus == NPCStatus.Unterwegs)
             {
-                // 1. Bestimme zufällige Dauer für diesen Ausflug
                 float geplanteWanderDauer = Random.Range(minWanderZeit, maxWanderZeit);
                 float startZeit = Time.time;
 
-                // 2. Wandere solange die Zeit nicht abgelaufen ist
                 while (Time.time - startZeit < geplanteWanderDauer && aktuellerStatus == NPCStatus.Unterwegs)
                 {
                     if (wegpunkte.Count > 0 && agent != null && agent.isOnNavMesh)
@@ -89,14 +117,12 @@ public float maxWanderZeit = 60f; // Maximal 60 Sekunden wandern
                         agent.isStopped = false;
                         agent.SetDestination(ziel.position);
                         
-                        // Warten bis Ziel erreicht oder Status sich ändert
                         while (agent.pathPending || agent.remainingDistance > 0.5f)
                         {
                             if (aktuellerStatus != NPCStatus.Unterwegs) yield break;
                             yield return null;
                         }
 
-                        // Kurze Pause am Wegpunkt
                         yield return new WaitForSeconds(Random.Range(2f, 5f));
                     }
                     else 
@@ -105,7 +131,6 @@ public float maxWanderZeit = 60f; // Maximal 60 Sekunden wandern
                     }
                 }
 
-                // 3. Zeit ist um -> Gehe zum Haus
                 if (aktuellerStatus == NPCStatus.Unterwegs && meinHaus != null)
                 {
                     yield return StartCoroutine(GeheNachHauseRoutine());
@@ -155,8 +180,6 @@ public float maxWanderZeit = 60f; // Maximal 60 Sekunden wandern
         
         if (agent != null && agent.isOnNavMesh)
         {
-
-
             agent.updateRotation = true;
             if (aktuellerStatus != NPCStatus.ImGespraech)
             {
@@ -174,10 +197,8 @@ public float maxWanderZeit = 60f; // Maximal 60 Sekunden wandern
         }
     }
 
-    // --- NEU: Kurze Pause nach dem Gespräch ---
     IEnumerator GespraechsEndeRoutine()
     {
-        // 1 Sekunde warten, damit es natürlicher wirkt
         yield return new WaitForSeconds(1.0f);
 
         int wahl = Random.Range(0, 2); 
@@ -192,14 +213,12 @@ public float maxWanderZeit = 60f; // Maximal 60 Sekunden wandern
             {
                 agent.isStopped = false;
                 agent.updateRotation = true;
-
             }
             StopAllCoroutines();
             StartCoroutine(NPCRoutine());
         }
     }
 
-    // --- NEU: Hilfs-Funktion für sauberes Drehen ---
     IEnumerator DreheZuPunkt(Vector3 zielPunkt)
     {
         Vector3 richtung = (zielPunkt - transform.position);
@@ -210,7 +229,6 @@ public float maxWanderZeit = 60f; // Maximal 60 Sekunden wandern
             Quaternion zielRotation = Quaternion.LookRotation(richtung);
             float timeout = 0f;
             
-            // Drehe den NPC max. 1 Sekunde lang in die neue Richtung
             while (Quaternion.Angle(transform.rotation, zielRotation) > 5f && timeout < 1f)
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, zielRotation, Time.deltaTime * 10f);

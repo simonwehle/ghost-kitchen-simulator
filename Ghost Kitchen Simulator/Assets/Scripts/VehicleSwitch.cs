@@ -15,6 +15,8 @@ public class VehicleSwitch : MonoBehaviour
     public GameObject enterCarText;
     public GameObject exitCarText;
 
+    public GameObject carUiPanel;
+
     private bool playerInRange = false;
     private bool isDriving = false;
 
@@ -77,6 +79,8 @@ public class VehicleSwitch : MonoBehaviour
         carController.enabled = false;
         carController.canDrive = false;
 
+        carUiPanel.SetActive(false);
+    
         exitCarText.SetActive(false);
 
         isDriving = false;
@@ -87,6 +91,7 @@ public class VehicleSwitch : MonoBehaviour
         if (other.GetComponentInParent<ThirdPersonController>() != null)
         {
             playerInRange = true;
+            carUiPanel.SetActive(true);
             enterCarText.SetActive(true);
         }
     }
@@ -96,6 +101,7 @@ public class VehicleSwitch : MonoBehaviour
         if (other.GetComponentInParent<ThirdPersonController>() != null)
         {
             playerInRange = false;
+            carUiPanel.SetActive(false);
             enterCarText.SetActive(false);
         }
     }
