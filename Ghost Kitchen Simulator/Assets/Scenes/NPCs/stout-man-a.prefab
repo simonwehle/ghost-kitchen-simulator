@@ -118,12 +118,17 @@ MonoBehaviour:
   agent: {fileID: 7986568277720376656}
   animator: {fileID: 7063968220683133171}
   meinHaus: {fileID: 0}
-  wegpunktContainer: {fileID: 0}
+  visualsContainer: {fileID: 4585717561906880563}
   minWartezeitHaus: 30
   maxWartezeitHaus: 120
   aktuellerStatus: 0
   minWanderZeit: 30
   maxWanderZeit: 120
+  wegpunktPause: {x: 2, y: 5}
+  rotationsGeschwindigkeit: 720
+  zielToleranz: 0.5
+  ladenToleranz: 0.5
+  warteToleranz: 0.2
 --- !u!114 &-6415980299279362389
 MonoBehaviour:
   m_ObjectHideFlags: 0

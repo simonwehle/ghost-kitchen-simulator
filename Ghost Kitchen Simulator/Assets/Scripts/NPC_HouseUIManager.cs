@@ -6,23 +6,9 @@ using UnityEngine.InputSystem;
 
 public class NPC_UIManager : MonoBehaviour
 {
-
     public static NPC_UIManager Instance { get; private set; }
 
-    void Awake()
-    {
-        // Wenn noch kein Manager existiert, wird dieser zum globalen Chef ernannt
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            // Falls du aus Versehen einen zweiten UI-Manager in die Szene ziehst, zerstört er sich selbst
-            Destroy(gameObject); 
-        }
-    }
-
+    [Header("UI Referenzen")]
     public GameObject selectionPanel;
     public GameObject buttonPrefab;
     public Transform buttonContainer;
@@ -30,19 +16,28 @@ public class NPC_UIManager : MonoBehaviour
     private Coroutine blickCoroutine;
     private NPC_StadtLeben aktuellerGesprächsPartner;
 
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
+
     void Update()
     {
         if (selectionPanel.activeSelf && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
             CloseMenu();
+        }
         else if (aktuellerGesprächsPartner != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
             BeendeGespraech();
+        }
     }
 
     public void ShowResidentSelection(List<NPC_StadtLeben> bewohner)
     {
         foreach (Transform child in buttonContainer) Destroy(child.gameObject);
         selectionPanel.SetActive(true);
-        
         SetPlayerControl(false); 
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -58,16 +53,19 @@ public class NPC_UIManager : MonoBehaviour
     void OnResidentSelected(NPC_StadtLeben npc)
     {
         aktuellerGesprächsPartner = npc;
-        npc.meinHaus.SpawnNPCForTalk(npc);
+        npc.aktuellerStatus = NPC_StadtLeben.NPCStatus.ImGespraech;
+        
+        if (npc.meinHaus != null) npc.meinHaus.SpawnNPCForTalk(npc);
+
         selectionPanel.SetActive(false);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        GameObject spieler = GameObject.FindGameObjectWithTag("Player");
-        if (spieler != null) 
+        // BESSER: Nutzt jetzt den Singleton anstelle des langsamen FindGameObjectWithTag
+        if (PlayerInteractionTest.Instance != null) 
         {
             if (blickCoroutine != null) StopCoroutine(blickCoroutine);
-            blickCoroutine = StartCoroutine(NPCBlicktZumSpieler(npc, spieler.transform));
+            blickCoroutine = StartCoroutine(NPCBlicktZumSpieler(npc, PlayerInteractionTest.Instance.transform));
         }
     }
 
@@ -77,7 +75,6 @@ public class NPC_UIManager : MonoBehaviour
         SetPlayerControl(true);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        aktuellerGesprächsPartner = null;
     }
 
     public void BeendeGespraech()
@@ -93,23 +90,13 @@ public class NPC_UIManager : MonoBehaviour
 
     private void SetPlayerControl(bool state)
     {
-        GameObject spieler = GameObject.FindGameObjectWithTag("Player");
-        
-
-        if (spieler != null)
+        if (PlayerInteractionTest.Instance != null)
         {
-            var input = spieler.GetComponent<PlayerInput>();
-            
+            var input = PlayerInteractionTest.Instance.GetComponent<PlayerInput>();
             if (input != null) 
             { 
-                if (state) 
-                {
-                    input.ActivateInput();
-                } 
-                else 
-                {
-                    input.DeactivateInput();
-                } 
+                if (state) input.ActivateInput();
+                else input.DeactivateInput();
             }
         }
     }
@@ -117,11 +104,13 @@ public class NPC_UIManager : MonoBehaviour
     System.Collections.IEnumerator NPCBlicktZumSpieler(NPC_StadtLeben npc, Transform ziel)
     {
         if (npc.agent != null) npc.agent.updateRotation = false;
+
         while (npc != null && npc.aktuellerStatus == NPC_StadtLeben.NPCStatus.ImGespraech)
         {
             npc.SchaueSpielerAn(ziel);
             yield return null;
         }
+
         if (npc != null && npc.agent != null) npc.agent.updateRotation = true;
     }
 }
