@@ -1,5 +1,6 @@
 using UnityEngine;
-using Unity.Cinemachine; 
+using Unity.Cinemachine;
+
 
 public class RollingStationInteract : MonoBehaviour
 {
@@ -9,8 +10,10 @@ public class RollingStationInteract : MonoBehaviour
 
     public bool TryStartMinigame(PlayerInteraction player)
     {
+        Debug.Log("Player is trying to start the Dough Rolling Minigame...");
         if (player.CurrentItem != null && player.CurrentItem.gameObject.CompareTag("Dough"))
         {
+            Debug.Log("Starting Dough Rolling Minigame!");
             player.DestroyHeldItem();
 
             if (stationCam != null) stationCam.Priority = 20; 
@@ -20,7 +23,7 @@ public class RollingStationInteract : MonoBehaviour
 
             return true; 
         }
-        
+         
         return false; 
     }
 

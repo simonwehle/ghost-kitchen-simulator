@@ -61,11 +61,11 @@ public class PlayerInteraction : MonoBehaviour
         // Schießt jeden Frame einen Strahl. Wenn er den Interactable Layer trifft...
         if (Physics.Raycast(transform.position, transform.forward, out hit, interactionDistance, interactableLayer))
         {
-            isLookingAtInteractable = true; // ...Fadenkreuz vergrößern!
+            isLookingAtInteractable = true; 
         }
         else
         {
-            isLookingAtInteractable = false; // ...sonst wieder klein machen.
+            isLookingAtInteractable = false; 
         }
     }
 
@@ -89,6 +89,10 @@ public class PlayerInteraction : MonoBehaviour
             if (station != null)
             {
                 return station.TryStartMinigame(this);
+            }
+            SauceStationInteract sauceStation = hit.collider.GetComponentInParent<SauceStationInteract>();
+            if (sauceStation != null)            {
+                return sauceStation.TryStartMinigame(this);
             }
         }
         return false;

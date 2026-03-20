@@ -7,6 +7,9 @@ TagManager:
   - CinemachineTarget
   - Water
   - Dough
+  - SauceDrop
+  - FlatDough
+  - SaucedDough
   layers:
   - Default
   - TransparentFX

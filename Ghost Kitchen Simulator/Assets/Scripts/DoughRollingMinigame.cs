@@ -1,3 +1,4 @@
+//using System.Numerics;
 using UnityEngine;
 using UnityEngine.InputSystem; 
 
@@ -21,8 +22,8 @@ public class DoughRollingMinigame : MonoBehaviour
     private Vector3 originalPinPosition;
     private Vector3 originalDoughScale;
 
-    // Referenzen für das Ende
-    private PlayerInteraction currentPlayer;
+    public PlayerInput _playerInput;
+    public PlayerInteraction currentPlayer;
     private RollingStationInteract currentStation;
 
     void Start()
@@ -79,6 +80,15 @@ public class DoughRollingMinigame : MonoBehaviour
         currentPlayer = player;
         currentStation = station;
 
+        _playerInput = player.transform.parent.GetComponentInChildren<PlayerInput>();
+        if (_playerInput != null)        {
+            _playerInput.enabled = false; // Deaktivieren, damit der Spieler sich nicht bewegen oder andere Aktionen ausführen kann
+        }
+        /*RigidBody rb = player.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+        }*/
         isMinigameActive = true;
         totalDistanceRolled = 0f;
         
@@ -88,10 +98,14 @@ public class DoughRollingMinigame : MonoBehaviour
         
         Cursor.lockState = CursorLockMode.Locked; 
     }
-
+ 
     private void FinishMinigame()
     {
         isMinigameActive = false;
+        if(_playerInput != null)        {
+            _playerInput.enabled = true; // Spieler wieder Kontrolle geben
+        }
+
         
         // 1. Station wieder komplett aufräumen für die nächste Nutzung!
         doughBall.gameObject.SetActive(false);
@@ -118,5 +132,21 @@ public class DoughRollingMinigame : MonoBehaviour
         {
             currentStation.EndMinigame();
         }
+    }
+    void LateUpdate() 
+    {
+        if (isMinigameActive && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            AbortMinigame();
+        }
+    }
+
+    private void AbortMinigame()
+    {
+        isMinigameActive = false;
+        if (_playerInput != null) _playerInput.enabled = true;
+        if (currentStation != null) currentStation.EndMinigame();
+        doughBall.gameObject.SetActive(false);
+        Debug.Log("Minigame abgebrochen");
     }
 }
