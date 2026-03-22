@@ -8,7 +8,7 @@ public class NPC_UIManager : MonoBehaviour
 {
     public static NPC_UIManager Instance { get; private set; }
 
-    [Header("UI Referenzen")]
+    [Header("UI References")]
     public GameObject selectionPanel;
     public GameObject buttonPrefab;
     public Transform buttonContainer;

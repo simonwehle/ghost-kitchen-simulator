@@ -35,7 +35,7 @@ public class HouseManager : MonoBehaviour
     {
         if (_bewohnerAktuellZuhause.Count == 0)
         {
-            Debug.Log("Niemand zu Hause.");
+            Debug.Log("Nobody is home.");
             return;
         }
         

@@ -7,20 +7,20 @@ public class NPC_StadtLeben : MonoBehaviour
 {
     public enum NPCStatus { ImHaus, Unterwegs, ImGespraech, InWarteschlange }
 
-    [Header("Referenzen")]
+    [Header("References")]
     public NavMeshAgent agent;
     public Animator animator;
     [HideInInspector] public HouseManager meinHaus;
 
-    [Header("Einstellungen")]
+    [Header("Settings")]
     public float minWartezeitHaus = 10f;
     public float maxWartezeitHaus = 20f;
     public NPCStatus aktuellerStatus = NPCStatus.ImHaus;
 
-    [Header("Wander-Einstellungen")]
+    [Header("Wander-Settings")]
     public float minWanderZeit = 30f; 
     public float maxWanderZeit = 60f; 
-    [Tooltip("Min/Max Pause an einem Wegpunkt")]
+    [Tooltip("Min/Max Pause at a Waypoint")]
     public Vector2 wegpunktPause = new Vector2(2f, 5f);
 
     [Header("Feintuning")]
@@ -81,7 +81,8 @@ public class NPC_StadtLeben : MonoBehaviour
     // --- DIE SAUBERE STATE MACHINE ---
     IEnumerator NPCHauptSchleife()
     {
-        while (true)
+        // LÄUFT JETZT SICHER: Nur solange das GameObject aktiv und das Skript an ist
+        while (isActiveAndEnabled)
         {
             if (aktuellerStatus == NPCStatus.ImHaus) yield return StartCoroutine(HausRoutine());
             else if (aktuellerStatus == NPCStatus.Unterwegs) yield return StartCoroutine(WanderRoutine());
@@ -99,7 +100,7 @@ public class NPC_StadtLeben : MonoBehaviour
 
     IEnumerator WanderRoutine()
     {
-        Debug.Log($"[{gameObject.name}] Beginnt Spaziergang.");
+        Debug.Log($"[{gameObject.name}] Starting walking routine.");
         float geplanteWanderDauer = Random.Range(minWanderZeit, maxWanderZeit);
         float startZeit = Time.time;
 
@@ -107,7 +108,7 @@ public class NPC_StadtLeben : MonoBehaviour
         {
             if (OrderManager.Instance != null && Random.Range(0f, 100f) <= OrderManager.Instance.einkaufsWahrscheinlichkeit)
             {
-                Debug.Log($"[{gameObject.name}] Spontane Idee: Einkaufen!");
+                Debug.Log($"[{gameObject.name}] Impulse: Shopping!");
                 yield return StartCoroutine(EinkaufsRoutine());
                 yield break; // Bricht das Wandern ab, wenn er einkaufen geht
             }
@@ -137,7 +138,7 @@ public class NPC_StadtLeben : MonoBehaviour
         
         if (aktuellerStatus == NPCStatus.Unterwegs && meinHaus != null)
         {
-            Debug.Log($"[{gameObject.name}] Spaziergang beendet. Gehe nach Hause.");
+            Debug.Log($"[{gameObject.name}] Walking routine finished. Going home.");
             yield return StartCoroutine(GeheNachHauseRoutine());
         }
     }
@@ -192,11 +193,10 @@ public class NPC_StadtLeben : MonoBehaviour
 
     IEnumerator EinkaufsRoutine()
     {
-        aktuellerStatus = NPCStatus.InWarteschlange; 
+        // 1. Zuerst nur das Ziel setzen, aber Status auf "Unterwegs" lassen!
         if (OrderManager.Instance.ladenEingang == null) 
         { 
-            Debug.LogError($"[{gameObject.name}] Kein LadenEingang im OrderManager zugewiesen!");
-            aktuellerStatus = NPCStatus.Unterwegs; 
+            Debug.LogError($"[{gameObject.name}] No store entrance assigned!");
             yield break; 
         }
 
@@ -208,32 +208,46 @@ public class NPC_StadtLeben : MonoBehaviour
         }
         yield return null; 
 
-        while (agent.pathPending || agent.remainingDistance > ladenToleranz) yield return null;
+        // 2. Warten, bis er WIRKLICH an der Ladentür angekommen ist - ELEGANT GELÖST
+        yield return new WaitUntil(() => 
+            agent != null && 
+            !agent.pathPending && 
+            agent.remainingDistance <= ladenToleranz && 
+            Vector3.Distance(transform.position, eingang.position) <= ladenToleranz + 1.5f
+        );
+
         agent.velocity = Vector3.zero; 
 
+        // 3. Erst JETZT prüfen, ob im Laden Platz ist
         if (OrderManager.Instance.IstPlatzFrei())
         {
-            Debug.Log($"[{gameObject.name}] Steht an der Tür: Platz frei. Stelle mich an.");
+            Debug.Log($"[{gameObject.name}] Am Eingang angekommen: Platz frei.");
+            
+            // Erst wenn er sich anstellt, ändert sich der Status!
             Transform punkt = OrderManager.Instance.Anstellen(this);
+            
             if (punkt != null)
             {
+                aktuellerStatus = NPCStatus.InWarteschlange; // Status erst HIER setzen
                 GeheZuWartepunkt(punkt);
+                
                 while (agent.pathPending || agent.remainingDistance > warteToleranz) yield return null;
                 agent.velocity = Vector3.zero; 
                 
                 float meineGeduld = OrderManager.Instance.GetRandomGeduld();
                 float warteBeginn = Time.time;
+                
                 while (aktuellerStatus == NPCStatus.InWarteschlange && (Time.time - warteBeginn) < meineGeduld)
                     yield return new WaitForSeconds(0.5f);
             }
         }
         else
         {
-            Debug.Log($"[{gameObject.name}] Steht an der Tür: Alles voll. Gehe weiter.");
+            Debug.Log($"[{gameObject.name}] Laden voll. Gehe weiter.");
         }
         
+        // 4. Aufräumen
         if (agent != null) agent.updateRotation = true; 
-        
         OrderManager.Instance.EntferneKunde(this);
         aktuellerStatus = NPCStatus.Unterwegs;
     }
@@ -317,7 +331,6 @@ public class NPC_StadtLeben : MonoBehaviour
 
     public void SetNPCPhysicalState(bool isActive)
     {
-        // Wieder wie vorher: Sucht selbst alle Teile und de/aktiviert sie absolut zuverlässig.
         foreach (var r in allRenderers) if(r != null) r.enabled = isActive;
         foreach (var c in allColliders) if(c != null) c.enabled = isActive;
         

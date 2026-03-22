@@ -6,7 +6,7 @@ public class PlayerInteractionTest : MonoBehaviour
     // Singleton für leichten Zugriff von anderen Scripts (z.B. UIManager)
     public static PlayerInteractionTest Instance { get; private set; }
 
-    [Header("Interaktion")]
+    [Header("Interaction")]
     public float interaktionsReichweite = 5f;
 
     void Awake()
@@ -41,7 +41,7 @@ public class PlayerInteractionTest : MonoBehaviour
             HouseManager haus = hit.collider.GetComponentInParent<HouseManager>();
             if (haus != null)
             {
-                Debug.Log("Interaktion: Haus/Tür erkannt.");
+                Debug.Log("Interaction: House/Door detected.");
                 InteragiereMitHaus(haus);
                 return; 
             }
@@ -49,14 +49,14 @@ public class PlayerInteractionTest : MonoBehaviour
             NPC_StadtLeben npc = hit.collider.GetComponentInParent<NPC_StadtLeben>();
             if (npc != null)
             {
-                Debug.Log("Interaktion: NPC erkannt.");
+                Debug.Log("Interaction: NPC detected.");
                 InteragiereMitNPC(npc);
                 return; 
             }
         }
         else
         {
-            Debug.Log("Nichts in Reichweite zum Interagieren.");
+            Debug.Log("Nothing in range to interact with.");
         }
     }
 
@@ -79,19 +79,19 @@ public class PlayerInteractionTest : MonoBehaviour
         {
             if (OrderManager.Instance != null && OrderManager.Instance.GetAktuellenKunden() == npc)
             {
-                Debug.Log($"Bediene Kunde am Tresen: {npc.name}");
+                Debug.Log($"Serving customer at the counter: {npc.name}");
                 npc.SchaueSpielerAn(transform);
                 npc.BedienungErfolgt();
             }
             else
             {
                 npc.SchaueSpielerAn(transform);
-                Debug.Log("Gespräch mit NPC gestartet (außerhalb des Ladens).");
+                Debug.Log("Conversation with NPC started (outside the store).");
             }
         }
         else
         {
-            Debug.Log("NPC ignoriert dich (ist beschäftigt oder wandert).");
+            Debug.Log("NPC ignores you (is busy or wandering).");
         }
     }
 }

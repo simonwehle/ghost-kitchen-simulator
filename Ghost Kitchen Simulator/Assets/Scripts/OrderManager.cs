@@ -6,19 +6,19 @@ public class OrderManager : MonoBehaviour
 {
     public static OrderManager Instance { get; private set; }
 
-    [Header("Laden-Eingang")]
-    [Tooltip("Ziehe hier das GameObject rein, das an der Ladentür liegt.")]
+    [Header("Store Entry")]
+    [Tooltip("Drag the GameObject located at the shop door here.")]
     public Transform ladenEingang;
 
-    [Header("Wartepositionen")]
-    [Tooltip("Ziehe hier die 3 Child-Objekte (Wegpunkte) am Tresen rein.")]
+    [Header("Waypoints for the queue")]
+    [Tooltip("Drag the 3 Child-Objects (Waypoints) to the counter here.")]
     public Transform[] schlangePunkte; 
 
-    [Header("Shop-Einstellungen")]
-    [Tooltip("Wie hoch ist die Chance, dass ein wandernder NPC einkaufen will?")]
+    [Header("Shop-Settings")]
+    [Tooltip("How high is the chance that a wandering NPC wants to shop?")]
     [Range(0, 100)] public float einkaufsWahrscheinlichkeit = 20f;
     
-    [Tooltip("Wie lange wartet ein Kunde am Tresen?")]
+    [Tooltip("How long does a customer wait at the counter?")]
     public float minKundenGeduld = 20f;
     public float maxKundenGeduld = 40f;
 
@@ -47,6 +47,11 @@ public class OrderManager : MonoBehaviour
         if (!wartendeNPCs.Contains(npc)) wartendeNPCs.Add(npc);
 
         int index = wartendeNPCs.IndexOf(npc);
+        
+        // --- NEUES LOG: Zeigt an, welcher Platz neu belegt wurde ---
+        // (index + 1), damit in der Konsole "Platz 1" statt "Platz 0" steht, liest sich besser!
+        Debug.Log($"[OrderManager] Warteplatz {index + 1} belegt von: {npc.gameObject.name}");
+        
         return schlangePunkte[index];
     }
 
@@ -66,6 +71,10 @@ public class OrderManager : MonoBehaviour
             if (wartendeNPCs[i] != null)
             {
                 Transform neuerPunkt = schlangePunkte[i];
+                
+                // --- NEUES LOG: Zeigt an, wer auf welchen Platz vorrückt ---
+                Debug.Log($"[OrderManager] Nachrücken: Warteplatz {i + 1} ist nun belegt von: {wartendeNPCs[i].gameObject.name}");
+                
                 StartCoroutine(VerzoegertesNachruecken(wartendeNPCs[i], neuerPunkt));
             }
         }
@@ -87,11 +96,11 @@ public class OrderManager : MonoBehaviour
         return null;
     }
 
-    [ContextMenu("Ersten Kunden bedienen")]
+    [ContextMenu("Serve First Customer")]
     public void BedienteErstenKunden()
     {
         NPC_StadtLeben kunde = GetAktuellenKunden();
         if (kunde != null) kunde.BedienungErfolgt();
-        else Debug.Log("Kein Kunde in der Schlange!");
+        else Debug.Log("No customer in the queue!");
     }
 }

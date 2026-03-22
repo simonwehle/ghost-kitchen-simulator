@@ -90,7 +90,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 349194661481232818}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.3
   m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50
@@ -99,7 +99,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 2
+  m_Height: 2.1
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
@@ -118,7 +118,6 @@ MonoBehaviour:
   agent: {fileID: -8826156776619467023}
   animator: {fileID: 6445612906787682674}
   meinHaus: {fileID: 0}
-  visualsContainer: {fileID: 349194661481232818}
   minWartezeitHaus: 30
   maxWartezeitHaus: 120
   aktuellerStatus: 0

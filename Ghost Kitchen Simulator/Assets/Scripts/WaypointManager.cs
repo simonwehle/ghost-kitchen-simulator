@@ -5,7 +5,7 @@ public class WaypointManager : MonoBehaviour
 {
     public static WaypointManager Instance { get; private set; }
 
-    [Header("Wegpunkte")]
+    [Header("Waypoints")]
     public List<Transform> alleWegpunkte = new List<Transform>();
 
     private void Awake()

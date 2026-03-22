@@ -95,7 +95,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 6503447346212453795}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.3
   m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50
@@ -123,7 +123,6 @@ MonoBehaviour:
   agent: {fileID: 5161223412385217544}
   animator: {fileID: 570583448352111971}
   meinHaus: {fileID: 0}
-  visualsContainer: {fileID: 6503447346212453795}
   minWartezeitHaus: 30
   maxWartezeitHaus: 120
   aktuellerStatus: 0
