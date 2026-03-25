@@ -10,6 +10,7 @@ TagManager:
   - SauceDrop
   - FlatDough
   - SaucedDough
+  - Topping
   layers:
   - Default
   - TransparentFX
@@ -20,29 +21,6 @@ TagManager:
   - Nav_Path
   - NPC
   - Player
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - Cam
   - Interactable
   - 
   - 
@@ -65,8 +43,7 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - Cam
   m_SortingLayers:
   - name: Default
     uniqueID: 0
