@@ -6,6 +6,10 @@ TagManager:
   tags:
   - CinemachineTarget
   - Water
+  - Dough
+  - SauceDrop
+  - FlatDough
+  - SaucedDough
   layers:
   - Default
   - TransparentFX
@@ -39,6 +43,33 @@ TagManager:
   - 
   - 
   - Cam
+<<<<<<< HEAD
+=======
+  - Interactable
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+>>>>>>> BasicPlayerControls
   m_SortingLayers:
   - name: Default
     uniqueID: 0
