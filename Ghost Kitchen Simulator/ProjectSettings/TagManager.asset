@@ -43,8 +43,6 @@ TagManager:
   - 
   - 
   - Cam
-<<<<<<< HEAD
-=======
   - Interactable
   - 
   - 
@@ -69,7 +67,6 @@ TagManager:
   - 
   - 
   - 
->>>>>>> BasicPlayerControls
   m_SortingLayers:
   - name: Default
     uniqueID: 0
