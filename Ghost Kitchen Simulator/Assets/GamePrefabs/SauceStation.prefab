@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4286894219238334890}
   - component: {fileID: 2118491176426081911}
   - component: {fileID: 7296977693877027518}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: SauceStation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -153,7 +153,8 @@ MonoBehaviour:
   xLimit: 0.9
   zLimit: 0.4
   sensitivity: 0.002
-  spoonHeight: 2
+  dropFrequency: 0.2
+  spoonHeight: 2.2
   dropsNeeded: 20
 --- !u!1 &1200834031090810935
 GameObject:
@@ -676,11 +677,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8142394513516115255, guid: 08f647eaed404d54aa74457190d81aec, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.288
+      value: 0.3491
       objectReference: {fileID: 0}
     - target: {fileID: 8142394513516115255, guid: 08f647eaed404d54aa74457190d81aec, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.3049
+      value: 0.3164
       objectReference: {fileID: 0}
     - target: {fileID: 8142394513516115255, guid: 08f647eaed404d54aa74457190d81aec, type: 3}
       propertyPath: m_LocalRotation.w
