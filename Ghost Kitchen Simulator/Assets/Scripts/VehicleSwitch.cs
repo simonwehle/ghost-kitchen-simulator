@@ -8,14 +8,11 @@ public class VehicleSwitch : MonoBehaviour
     public GameObject player;
     public GameObject car;
     public SimpleCarController carController;
-    public ThirdPersonController playerController;
-    public SkinnedMeshRenderer playerVisual;
-    public Transform playerCamera;
-    public GameObject playerCamRoot;
-    public GameObject enterCarText;
-    public GameObject exitCarText;
+    public Camera carCamera;
+    public GameObject uiPanel;
 
-    public GameObject carUiPanel;
+    private GameObject enterCarText;
+    private GameObject exitCarText;
 
     private bool playerInRange = false;
     private bool isDriving = false;
@@ -23,6 +20,11 @@ public class VehicleSwitch : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        enterCarText = uiPanel.transform.Find("EnterCarTM").gameObject;
+        exitCarText = uiPanel.transform.Find("ExitCarTM").gameObject;
+
+        enterCarText.SetActive(false);
+        exitCarText.SetActive(false);
     }
 
     // Update is called once per frame
@@ -43,17 +45,12 @@ public class VehicleSwitch : MonoBehaviour
 
     void EnterCar()
     {
-        playerController.enabled = false;
-        playerVisual.enabled = false;
-        playerCamRoot.SetActive(false);
+        player.SetActive(false);
+        carCamera.gameObject.SetActive(true);
         player.transform.position = car.transform.position;
 
         carController.enabled = true;
         carController.canDrive = true;
-
-        playerCamera.SetParent(car.transform);
-        playerCamera.localPosition = new Vector3(0, 3, -5);
-        playerCamera.localRotation = Quaternion.Euler(20, 0, 0);
 
         enterCarText.SetActive(false);
         exitCarText.SetActive(true);
@@ -63,24 +60,15 @@ public class VehicleSwitch : MonoBehaviour
 
     void ExitCar()
     {
-        Vector3 exitOffset = car.transform.right * 2f;
-        Vector3 exitPosition = car.transform.position + exitOffset + Vector3.up * 4f;
+        player.transform.position = car.transform.position + Vector3.up * 4f;
 
-        player.transform.position = exitPosition;
-        player.transform.rotation = Quaternion.Euler(0, car.transform.eulerAngles.y, 0);
-
-        playerController.enabled = true;
-        playerVisual.enabled = true;
-        playerCamRoot.SetActive(true);
-        playerCamera.SetParent(playerCamRoot.transform);
-        playerCamera.localPosition = Vector3.zero;
-        playerCamera.localRotation = Quaternion.identity;
+        player.SetActive(true);
+        carCamera.gameObject.SetActive(false);
 
         carController.enabled = false;
         carController.canDrive = false;
 
-        carUiPanel.SetActive(false);
-    
+        uiPanel.SetActive(false);
         exitCarText.SetActive(false);
 
         isDriving = false;
@@ -91,7 +79,7 @@ public class VehicleSwitch : MonoBehaviour
         if (other.GetComponentInParent<ThirdPersonController>() != null)
         {
             playerInRange = true;
-            carUiPanel.SetActive(true);
+            uiPanel.SetActive(true);
             enterCarText.SetActive(true);
         }
     }
@@ -101,7 +89,7 @@ public class VehicleSwitch : MonoBehaviour
         if (other.GetComponentInParent<ThirdPersonController>() != null)
         {
             playerInRange = false;
-            carUiPanel.SetActive(false);
+            uiPanel.SetActive(false);
             enterCarText.SetActive(false);
         }
     }
