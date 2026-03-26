@@ -11,6 +11,7 @@ TagManager:
   - FlatDough
   - SaucedDough
   - Topping
+  - Pizza
   layers:
   - Default
   - TransparentFX

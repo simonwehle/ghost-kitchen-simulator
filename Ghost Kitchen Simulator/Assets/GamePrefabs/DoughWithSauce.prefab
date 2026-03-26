@@ -337,6 +337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08cb872bd76854d27a4a9178d44d2ab5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
+  isBurnt: 0
 --- !u!65 &1843376787597517896
 BoxCollider:
   m_ObjectHideFlags: 0

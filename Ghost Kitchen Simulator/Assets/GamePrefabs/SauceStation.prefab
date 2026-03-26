@@ -583,6 +583,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5036259484022979060}
     m_Modifications:
+    - target: {fileID: 406234174595457407, guid: 799c76f387fb29f44bb059e95c4b9b97, type: 3}
+      propertyPath: m_Size.y
+      value: 0.005549114
+      objectReference: {fileID: 0}
+    - target: {fileID: 406234174595457407, guid: 799c76f387fb29f44bb059e95c4b9b97, type: 3}
+      propertyPath: m_Center.x
+      value: -0.00089768047
+      objectReference: {fileID: 0}
+    - target: {fileID: 406234174595457407, guid: 799c76f387fb29f44bb059e95c4b9b97, type: 3}
+      propertyPath: m_Center.y
+      value: 0.0037307425
+      objectReference: {fileID: 0}
+    - target: {fileID: 406234174595457407, guid: 799c76f387fb29f44bb059e95c4b9b97, type: 3}
+      propertyPath: m_Center.z
+      value: -0.0005410603
+      objectReference: {fileID: 0}
     - target: {fileID: 4437135590557486628, guid: 799c76f387fb29f44bb059e95c4b9b97, type: 3}
       propertyPath: m_Name
       value: Food_FlatDough

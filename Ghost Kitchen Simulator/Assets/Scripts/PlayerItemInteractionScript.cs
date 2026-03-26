@@ -32,16 +32,23 @@ public class PlayerInteraction : MonoBehaviour
         // 2. Eingaben abfragen (wie vorher)
         if (Keyboard.current.eKey.wasPressedThisFrame) 
         {
+            // ERSTENS: Versuchen, mit einer Station (Ofen, Tisch, etc.) zu interagieren
+            // Wir übergeben das currentItem (egal ob es null ist oder nicht)
+            if (TryUseStation()) 
+            {
+                // Wenn TryUseStation 'true' liefert, hat der Ofen oder eine Station 
+                // die Interaktion geschluckt. Wir sind hier fertig.
+                return; 
+            }
+
+            // ZWEITENS: Wenn keine Station vor uns ist, normale Item-Logik
             if (currentItem == null)
             {
                 TryPickUp();
             }
             else
             {
-                if (!TryUseStation())
-                {
-                    DropItem();
-                }
+                DropItem(); // Wenn wir was halten und ins Leere klicken -> Fallen lassen
             }
         }
         
@@ -81,22 +88,26 @@ public class PlayerInteraction : MonoBehaviour
 
     // --- STATION LOGIK ---
     private bool TryUseStation()
+{
+    RaycastHit hit;
+    if (Physics.Raycast(transform.position, transform.forward, out hit, interactionDistance, interactableLayer))
     {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, interactionDistance, interactableLayer))
+        OvenController oven = hit.collider.GetComponentInParent<OvenController>();
+        if (oven != null)
         {
-            RollingStationInteract station = hit.collider.GetComponent<RollingStationInteract>();
-            if (station != null)
-            {
-                return station.TryStartMinigame(this);
-            }
-            SauceStationInteract sauceStation = hit.collider.GetComponentInParent<SauceStationInteract>();
-            if (sauceStation != null)            {
-                return sauceStation.TryStartMinigame(this);
-            }
+            oven.OnInteract(hit.collider.gameObject, this);
+            return true; 
         }
-        return false;
+
+        RollingStationInteract station = hit.collider.GetComponent<RollingStationInteract>();
+        if (station != null) return station.TryStartMinigame(this);
+
+        SauceStationInteract sauceStation = hit.collider.GetComponentInParent<SauceStationInteract>();
+        if (sauceStation != null) return sauceStation.TryStartMinigame(this);
+
     }
+    return false;
+}
 
     // --- ITEM LOGIK ---
     public void DestroyHeldItem()
@@ -144,5 +155,9 @@ public class PlayerInteraction : MonoBehaviour
             currentItem.Drop(transform.forward, throwForce);
             currentItem = null;
         }
+    }
+    public void ClearHeldItem()
+    {
+        currentItem = null;
     }
 }

@@ -4,6 +4,7 @@ public class Item : MonoBehaviour
 {
     private Rigidbody rb;
     private Collider col;
+    public bool isBurnt = false; // Neue Variable, um den Zustand des Items zu verfolgen
 
     void Awake()
     {
