@@ -2,9 +2,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class OrderManager : MonoBehaviour
+public class NPCShoppingManager : MonoBehaviour
 {
-    public static OrderManager Instance { get; private set; }
+    public static NPCShoppingManager Instance { get; private set; }
 
     [Header("Store Entry")]
     [Tooltip("Drag the GameObject located at the shop door here.")]

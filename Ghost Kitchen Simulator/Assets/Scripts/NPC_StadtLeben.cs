@@ -73,7 +73,7 @@ public class NPC_StadtLeben : MonoBehaviour
         if (aktuellerStatus == NPCStatus.ImHaus) return true;
         if (aktuellerStatus == NPCStatus.InWarteschlange)
         {
-            return OrderManager.Instance != null && OrderManager.Instance.GetAktuellenKunden() == this;
+            return NPCShoppingManager.Instance != null && NPCShoppingManager.Instance.GetAktuellenKunden() == this;
         }
         return false;
     }
@@ -106,7 +106,7 @@ public class NPC_StadtLeben : MonoBehaviour
 
         while (Time.time - startZeit < geplanteWanderDauer && aktuellerStatus == NPCStatus.Unterwegs)
         {
-            if (OrderManager.Instance != null && Random.Range(0f, 100f) <= OrderManager.Instance.einkaufsWahrscheinlichkeit)
+            if (NPCShoppingManager.Instance != null && Random.Range(0f, 100f) <= NPCShoppingManager.Instance.einkaufsWahrscheinlichkeit)
             {
                 Debug.Log($"[{gameObject.name}] Impulse: Shopping!");
                 yield return StartCoroutine(EinkaufsRoutine());
@@ -146,7 +146,7 @@ public class NPC_StadtLeben : MonoBehaviour
     public void BeendeGespraechUndGeheWeiter()
     {
         NPCStatus vorherigerStatus = aktuellerStatus;
-        if (OrderManager.Instance != null) OrderManager.Instance.EntferneKunde(this);
+        if (NPCShoppingManager.Instance != null) NPCShoppingManager.Instance.EntferneKunde(this);
         
         StopAllCoroutines(); 
         StartCoroutine(GespraechsEndeRoutine(vorherigerStatus));
@@ -194,13 +194,13 @@ public class NPC_StadtLeben : MonoBehaviour
     IEnumerator EinkaufsRoutine()
     {
         // 1. Zuerst nur das Ziel setzen, aber Status auf "Unterwegs" lassen!
-        if (OrderManager.Instance.ladenEingang == null) 
+        if (NPCShoppingManager.Instance.ladenEingang == null) 
         { 
             Debug.LogError($"[{gameObject.name}] No store entrance assigned!");
             yield break; 
         }
 
-        Transform eingang = OrderManager.Instance.ladenEingang;
+        Transform eingang = NPCShoppingManager.Instance.ladenEingang;
         if (agent != null && agent.isOnNavMesh) { 
             agent.updateRotation = true; 
             agent.isStopped = false; 
@@ -219,12 +219,12 @@ public class NPC_StadtLeben : MonoBehaviour
         agent.velocity = Vector3.zero; 
 
         // 3. Erst JETZT prüfen, ob im Laden Platz ist
-        if (OrderManager.Instance.IstPlatzFrei())
+        if (NPCShoppingManager.Instance.IstPlatzFrei())
         {
             Debug.Log($"[{gameObject.name}] Am Eingang angekommen: Platz frei.");
             
             // Erst wenn er sich anstellt, ändert sich der Status!
-            Transform punkt = OrderManager.Instance.Anstellen(this);
+            Transform punkt = NPCShoppingManager.Instance.Anstellen(this);
             
             if (punkt != null)
             {
@@ -234,7 +234,7 @@ public class NPC_StadtLeben : MonoBehaviour
                 while (agent.pathPending || agent.remainingDistance > warteToleranz) yield return null;
                 agent.velocity = Vector3.zero; 
                 
-                float meineGeduld = OrderManager.Instance.GetRandomGeduld();
+                float meineGeduld = NPCShoppingManager.Instance.GetRandomGeduld();
                 float warteBeginn = Time.time;
                 
                 while (aktuellerStatus == NPCStatus.InWarteschlange && (Time.time - warteBeginn) < meineGeduld)
@@ -248,7 +248,7 @@ public class NPC_StadtLeben : MonoBehaviour
         
         // 4. Aufräumen
         if (agent != null) agent.updateRotation = true; 
-        OrderManager.Instance.EntferneKunde(this);
+        NPCShoppingManager.Instance.EntferneKunde(this);
         aktuellerStatus = NPCStatus.Unterwegs;
     }
 

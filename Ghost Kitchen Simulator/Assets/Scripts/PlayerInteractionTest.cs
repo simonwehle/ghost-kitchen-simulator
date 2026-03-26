@@ -77,7 +77,7 @@ public class PlayerInteractionTest : MonoBehaviour
     {
         if (npc.KannInteragieren())
         {
-            if (OrderManager.Instance != null && OrderManager.Instance.GetAktuellenKunden() == npc)
+            if (NPCShoppingManager.Instance != null && NPCShoppingManager.Instance.GetAktuellenKunden() == npc)
             {
                 Debug.Log($"Serving customer at the counter: {npc.name}");
                 npc.SchaueSpielerAn(transform);
