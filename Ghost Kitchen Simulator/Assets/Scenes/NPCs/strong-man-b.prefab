@@ -98,7 +98,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 3933782861583121662}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.3
   m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50
@@ -107,7 +107,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 2
+  m_Height: 2.1
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
@@ -126,12 +126,16 @@ MonoBehaviour:
   agent: {fileID: 5854291240100538204}
   animator: {fileID: 7727164120170232894}
   meinHaus: {fileID: 0}
-  wegpunktContainer: {fileID: 0}
   minWartezeitHaus: 30
   maxWartezeitHaus: 120
   aktuellerStatus: 0
   minWanderZeit: 30
   maxWanderZeit: 120
+  wegpunktPause: {x: 2, y: 5}
+  rotationsGeschwindigkeit: 720
+  zielToleranz: 0.5
+  ladenToleranz: 0.5
+  warteToleranz: 0.2
 --- !u!114 &-55978256884517992
 MonoBehaviour:
   m_ObjectHideFlags: 0

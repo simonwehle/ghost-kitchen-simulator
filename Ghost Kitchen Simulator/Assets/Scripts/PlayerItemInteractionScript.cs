@@ -11,7 +11,7 @@ public class PlayerInteraction : MonoBehaviour
     public float throwForce = 20f; 
 
     [Header("Crosshair UI")]
-    public RectTransform crosshair; // Zieh dein Crosshair-Image hier rein
+    public GameObject crosshair; // Zieh dein Crosshair-Image hier rein
     public Vector3 normalScale = new Vector3(1f, 1f, 1f);
     public Vector3 interactScale = new Vector3(2f, 2f, 2f); // Fadenkreuz wird doppelt so dick/groß
     public float animationSpeed = 15f; // Wie schnell es wächst/schrumpft
@@ -21,10 +21,21 @@ public class PlayerInteraction : MonoBehaviour
 
     public Item CurrentItem => currentItem; 
 
+    public CameraSwitcher _cameraSwitcher ;
+
     void Update()
     {
         Debug.DrawRay(transform.position, transform.forward * interactionDistance, Color.red);
-        
+
+        if (_cameraSwitcher.isFirstPerson)
+        {
+            Invoke("enableCrosshair",0.2f);
+        }
+        else
+        {
+            disableCrosshair();
+        }
+
         // 1. Permanent prüfen, ob wir etwas anschaubar haben
         CheckForInteractable();
         AnimateCrosshair();
@@ -61,10 +72,20 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
+    void enableCrosshair()
+    {
+        if (crosshair != null) crosshair.SetActive(true);
+    }
+    void disableCrosshair()
+    {
+        if (crosshair != null) crosshair.SetActive(false);
+    }
+
     // --- FADENKREUZ LOGIK ---
     private void CheckForInteractable()
     {
         RaycastHit hit;
+
         // Schießt jeden Frame einen Strahl. Wenn er den Interactable Layer trifft...
         if (Physics.Raycast(transform.position, transform.forward, out hit, interactionDistance, interactableLayer))
         {
@@ -82,32 +103,32 @@ public class PlayerInteraction : MonoBehaviour
         {
             // Lerp sorgt für einen butterweichen Übergang zwischen den Größen
             Vector3 targetScale = isLookingAtInteractable ? interactScale : normalScale;
-            crosshair.localScale = Vector3.Lerp(crosshair.localScale, targetScale, Time.deltaTime * animationSpeed);
+            crosshair.transform.localScale = Vector3.Lerp(crosshair.transform.localScale, targetScale, Time.deltaTime * animationSpeed);
         }
     }
 
     // --- STATION LOGIK ---
     private bool TryUseStation()
-{
-    RaycastHit hit;
-    if (Physics.Raycast(transform.position, transform.forward, out hit, interactionDistance, interactableLayer))
     {
-        OvenController oven = hit.collider.GetComponentInParent<OvenController>();
-        if (oven != null)
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, interactionDistance, interactableLayer))
         {
-            oven.OnInteract(hit.collider.gameObject, this);
-            return true; 
+            OvenController oven = hit.collider.GetComponentInParent<OvenController>();
+            if (oven != null)
+            {
+                oven.OnInteract(hit.collider.gameObject, this);
+                return true; 
+            }
+
+            RollingStationInteract station = hit.collider.GetComponent<RollingStationInteract>();
+            if (station != null) return station.TryStartMinigame(this);
+
+            SauceStationInteract sauceStation = hit.collider.GetComponentInParent<SauceStationInteract>();
+            if (sauceStation != null) return sauceStation.TryStartMinigame(this);
+
         }
-
-        RollingStationInteract station = hit.collider.GetComponent<RollingStationInteract>();
-        if (station != null) return station.TryStartMinigame(this);
-
-        SauceStationInteract sauceStation = hit.collider.GetComponentInParent<SauceStationInteract>();
-        if (sauceStation != null) return sauceStation.TryStartMinigame(this);
-
+        return false;
     }
-    return false;
-}
 
     // --- ITEM LOGIK ---
     public void DestroyHeldItem()

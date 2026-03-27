@@ -35,14 +35,14 @@ public class HouseManager : MonoBehaviour
     {
         if (_bewohnerAktuellZuhause.Count == 0)
         {
-            Debug.Log("Niemand zu Hause.");
+            Debug.Log("Nobody is home.");
             return;
         }
         
         // Auch bei nur einer Person rufen wir jetzt die UI auf, 
         // damit die Interaktions-Logik (Sperren, Drehen) startet.
         //OnMultipleResidentsUI.Invoke(_bewohnerAktuellZuhause);
-        NPC_UIManager.Instance.ShowResidentSelection(_bewohnerAktuellZuhause);
+        NPC_HouseUIManager.Instance.ShowResidentSelection(_bewohnerAktuellZuhause);
     }
 
     public void SpawnNPCForTalk(NPC_StadtLeben npc)

@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Cinemachine;
 using UnityEngine.InputSystem;
 using StarterAssets;
+using System;
 
 public class CameraSwitcher : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class CameraSwitcher : MonoBehaviour
     private ThirdPersonController _controller;
     public GameObject _player_cam_root;
     public GameObject _player_arm;
-    private bool _isFirstPerson = false;
+    public bool isFirstPerson { get; private set; } = false;
 
     [Header("Zoom Settings")]
     public float zoomSpeed = 2f;
@@ -34,17 +35,17 @@ public class CameraSwitcher : MonoBehaviour
         // Kamera wechseln
         if (Keyboard.current.vKey.wasPressedThisFrame)
         {
-            _isFirstPerson = !_isFirstPerson;
-            fpCamera.Priority = _isFirstPerson ? 20 : 5;
+            isFirstPerson = !isFirstPerson;
+            fpCamera.Priority = isFirstPerson ? 20 : 5;
         }
 
         // Zoom-Logik (nur wenn nicht in First Person)
-        if (!_isFirstPerson && _tpFollow != null)
+        if (!isFirstPerson && _tpFollow != null)
         {
             HandleZoom();
         }
 
-        if (_isFirstPerson)
+        if (isFirstPerson)
         {
             SyncRotation();
         }

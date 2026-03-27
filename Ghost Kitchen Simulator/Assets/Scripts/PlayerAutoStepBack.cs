@@ -5,7 +5,7 @@ using UnityEngine.InputSystem; // NEU: Wichtig für das Input System
 
 public class PlayerAutoStepBack : MonoBehaviour
 {
-    [Header("Einstellungen")]
+    [Header("Settings")]
     public float schrittDauer = 0.8f; 
 
     private StarterAssetsInputs _inputs;
@@ -51,7 +51,7 @@ public class PlayerAutoStepBack : MonoBehaviour
         }
         else
         {
-            Debug.LogError("StarterAssetsInputs wurde auf dem Spieler nicht gefunden!");
+            Debug.LogError("StarterAssetsInputs not found on Player! Please add the component to use PlayerAutoStepBack.");
         }
     }
 }
