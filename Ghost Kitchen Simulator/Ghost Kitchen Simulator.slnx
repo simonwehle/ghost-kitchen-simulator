@@ -3,8 +3,8 @@
   <Project Path="Barmetler.RoadSystem.Runtime.csproj" />
   <Project Path="Unity.Splines.Editor.csproj" />
   <Project Path="Unity.Splines.Examples.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Barmetler.RoadSystem.Editor.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Unity.Splines.Examples.Editor.csproj" />
   <Project Path="Unity.StarterAssets.Editor.csproj" />
   <Project Path="Barmetler.RoadSystem.Editor.Tests.csproj" />
