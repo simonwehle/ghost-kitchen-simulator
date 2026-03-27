@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4801551792286109748
 Transform:
   m_ObjectHideFlags: 0
@@ -195,6 +195,7 @@ GameObject:
   - component: {fileID: 6508909431977008698}
   - component: {fileID: 1843376787597517896}
   - component: {fileID: 1664846253156417889}
+  - component: {fileID: 6219810212760378246}
   m_Layer: 9
   m_Name: DoughWithSauce
   m_TagString: SaucedDough
@@ -372,3 +373,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PizzaToppingManager
   toppingsOnPizza: []
+--- !u!114 &6219810212760378246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6266161190270083703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c721eadbb17e49a44ba9469bca6f10cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PizzaDoughHandler
+  toppingZone: {fileID: 503600988656403940}

@@ -162,6 +162,9 @@ public class OvenController : MonoBehaviour
     private void ApplyBakeEffect(GameObject pizza)
     {
         if (pizza == null) return;
+        pizza.tag = "Pizza"; // Sicherstellen, dass der Tag auf "Pizza" gesetzt ist
+        PizzaDoughHandler dough = pizza.GetComponent<PizzaDoughHandler>();
+        if (dough != null) dough.OnPickedUp();
         
         Renderer[] allRenderers = pizza.GetComponentsInChildren<Renderer>();
         foreach (Renderer rend in allRenderers)
@@ -185,6 +188,8 @@ public class OvenController : MonoBehaviour
                 rend.material.color = burntPizzaColor;
             }
         }
+        PizzaDoughHandler dough = pizza.GetComponent<PizzaDoughHandler>();
+        if (dough != null) dough.OnPickedUp();
     }
 
     private void SpawnSteam(GameObject pizza)

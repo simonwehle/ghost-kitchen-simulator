@@ -157,6 +157,9 @@ public class PlayerInteraction : MonoBehaviour
             {
                 currentItem = item;
                 currentItem.PickUp(holdPoint);
+
+                PizzaDoughHandler dough = currentItem.GetComponent<PizzaDoughHandler>();
+                if (dough != null) dough.OnPickedUp();
             }
         }
     }
@@ -165,8 +168,13 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (currentItem != null)
         {
+            PizzaDoughHandler dough = currentItem.GetComponent<PizzaDoughHandler>();
+            if (dough != null) dough.OnDropped();
+            
             currentItem.Drop(transform.forward, dropForce);
             currentItem = null;
+            
+            
         }
     }
 
