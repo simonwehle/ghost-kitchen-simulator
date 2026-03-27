@@ -42,7 +42,7 @@ public class HouseManager : MonoBehaviour
         // Auch bei nur einer Person rufen wir jetzt die UI auf, 
         // damit die Interaktions-Logik (Sperren, Drehen) startet.
         //OnMultipleResidentsUI.Invoke(_bewohnerAktuellZuhause);
-        NPC_UIManager.Instance.ShowResidentSelection(_bewohnerAktuellZuhause);
+        NPC_HouseUIManager.Instance.ShowResidentSelection(_bewohnerAktuellZuhause);
     }
 
     public void SpawnNPCForTalk(NPC_StadtLeben npc)

@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerInteractionTest : MonoBehaviour
+public class PlayerInteractionHouse : MonoBehaviour
 {
     // Singleton für leichten Zugriff von anderen Scripts (z.B. UIManager)
-    public static PlayerInteractionTest Instance { get; private set; }
+    public static PlayerInteractionHouse Instance { get; private set; }
 
     [Header("Interaction")]
     public float interaktionsReichweite = 5f;
@@ -34,7 +34,7 @@ public class PlayerInteractionTest : MonoBehaviour
         Vector3 richtung = transform.forward;
         RaycastHit hit;
 
-        Debug.DrawRay(startPunkt, richtung * interaktionsReichweite, Color.green, 2f);
+        //Debug.DrawRay(startPunkt, richtung * interaktionsReichweite, Color.green, 2f);
 
         if (Physics.Raycast(startPunkt, richtung, out hit, interaktionsReichweite))
         {

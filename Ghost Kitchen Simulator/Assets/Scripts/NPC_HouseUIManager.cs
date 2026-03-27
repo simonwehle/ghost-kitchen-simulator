@@ -4,9 +4,9 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.InputSystem;
 
-public class NPC_UIManager : MonoBehaviour
+public class NPC_HouseUIManager : MonoBehaviour
 {
-    public static NPC_UIManager Instance { get; private set; }
+    public static NPC_HouseUIManager Instance { get; private set; }
 
     [Header("UI References")]
     public GameObject selectionPanel;
@@ -62,10 +62,10 @@ public class NPC_UIManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         // BESSER: Nutzt jetzt den Singleton anstelle des langsamen FindGameObjectWithTag
-        if (PlayerInteractionTest.Instance != null) 
+        if (PlayerInteractionHouse.Instance != null) 
         {
             if (blickCoroutine != null) StopCoroutine(blickCoroutine);
-            blickCoroutine = StartCoroutine(NPCBlicktZumSpieler(npc, PlayerInteractionTest.Instance.transform));
+            blickCoroutine = StartCoroutine(NPCBlicktZumSpieler(npc, PlayerInteractionHouse.Instance.transform));
         }
     }
 
@@ -90,9 +90,9 @@ public class NPC_UIManager : MonoBehaviour
 
     private void SetPlayerControl(bool state)
     {
-        if (PlayerInteractionTest.Instance != null)
+        if (PlayerInteractionHouse.Instance != null)
         {
-            var input = PlayerInteractionTest.Instance.GetComponent<PlayerInput>();
+            var input = PlayerInteractionHouse.Instance.GetComponent<PlayerInput>();
             if (input != null) 
             { 
                 if (state) input.ActivateInput();

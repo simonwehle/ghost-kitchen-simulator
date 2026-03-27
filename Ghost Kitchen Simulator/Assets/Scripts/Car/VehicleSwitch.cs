@@ -72,6 +72,7 @@ public class VehicleSwitch : MonoBehaviour
         exitCarText.SetActive(false);
 
         isDriving = false;
+        playerInRange = false;
     }
 
     void OnTriggerEnter(Collider other)
