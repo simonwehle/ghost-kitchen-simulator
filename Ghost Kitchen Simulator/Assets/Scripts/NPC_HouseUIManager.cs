@@ -62,10 +62,10 @@ public class NPC_HouseUIManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         // BESSER: Nutzt jetzt den Singleton anstelle des langsamen FindGameObjectWithTag
-        if (PlayerInteractionHouse.Instance != null) 
+        if (PlayerInteractionNPC.Instance != null) 
         {
             if (blickCoroutine != null) StopCoroutine(blickCoroutine);
-            blickCoroutine = StartCoroutine(NPCBlicktZumSpieler(npc, PlayerInteractionHouse.Instance.transform));
+            blickCoroutine = StartCoroutine(NPCBlicktZumSpieler(npc, PlayerInteractionNPC.Instance.transform));
         }
     }
 
@@ -90,9 +90,9 @@ public class NPC_HouseUIManager : MonoBehaviour
 
     private void SetPlayerControl(bool state)
     {
-        if (PlayerInteractionHouse.Instance != null)
+        if (PlayerInteractionNPC.Instance != null)
         {
-            var input = PlayerInteractionHouse.Instance.GetComponent<PlayerInput>();
+            var input = PlayerInteractionNPC.Instance.GetComponent<PlayerInput>();
             if (input != null) 
             { 
                 if (state) input.ActivateInput();
