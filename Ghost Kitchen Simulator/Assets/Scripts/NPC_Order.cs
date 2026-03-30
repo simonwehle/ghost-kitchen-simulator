@@ -168,4 +168,66 @@ public class NPC_Order : MonoBehaviour
         questionBubble.SetActive(false);
         timerBubble.SetActive(false);
     }
+
+    // Reagiert, wenn die Pizza als festes Objekt (Rigidbody) abprallt
+    private void OnCollisionEnter(Collision collision)
+    {
+        PruefePizzaTreffer(collision.gameObject);
+    }
+
+    // Reagiert, falls deine Pizza oder der NPC auf "Is Trigger" gestellt ist
+    private void OnTriggerEnter(Collider other)
+    {
+        PruefePizzaTreffer(other.gameObject);
+    }
+
+    // Die zentrale Logik für den Treffer
+    private void PruefePizzaTreffer(GameObject trefferObjekt)
+    {
+        // 1. Will der NPC überhaupt gerade eine Pizza?
+        if (currentState != OrderState.WaitingForFood) return;
+
+        // 2. Ist das fliegende Objekt wirklich eine fertige Pizza?
+        if (trefferObjekt.CompareTag("Pizza"))
+        {
+            Debug.Log($"Volltreffer! {gameObject.name} hat die Pizza gefangen!");
+
+            // 3. Pizza sofort verschwinden lassen (wurde "angenommen")
+            Destroy(trefferObjekt);
+
+            // 4. Dynamisches Bezahlen je nach Wartezeit!
+            MoneyManager kasse = Object.FindFirstObjectByType<MoneyManager>();
+            if (kasse != null)
+            {
+                int grundPreis = 15; 
+                int finalerPreis = grundPreis;
+                
+                // Wir berechnen, wie viel Prozent des Timers noch übrig sind (0.0 bis 1.0)
+                float verbleibendeZeitProzent = currentWaitTime / maxWaitTime;
+
+                if (verbleibendeZeitProzent > 0.6f)
+                {
+                    // GRÜN: Volles Gehalt
+                    finalerPreis = grundPreis;
+                }
+                else if (verbleibendeZeitProzent > 0.3f)
+                {
+                    // GELB: 1/3 Abzug (Spieler bekommt ca. 66% -> 10$)
+                    finalerPreis = Mathf.RoundToInt(grundPreis * 0.66f);
+                }
+                else
+                {
+                    // ROT: 2/3 Abzug (Spieler bekommt ca. 33% -> 5$)
+                    finalerPreis = Mathf.RoundToInt(grundPreis * 0.33f);
+                }
+
+                kasse.AddMoney(finalerPreis);
+                Debug.Log($"Verkauft für {finalerPreis}$! (Verbleibende Geduld: {verbleibendeZeitProzent * 100:0}%)");
+            }
+
+            // 5. NPC ist zufrieden und geht
+            currentState = OrderState.Done;
+            timerBubble.SetActive(false);
+        }
+    }
 }

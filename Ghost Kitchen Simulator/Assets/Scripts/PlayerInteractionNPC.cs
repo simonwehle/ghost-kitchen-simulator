@@ -82,24 +82,18 @@ public class PlayerInteractionNPC : MonoBehaviour
                 Debug.Log($"Serving customer at the counter: {npc.name}");
                 npc.SchaueSpielerAn(transform);
 
-                // --- NEU: Bestelldialog öffnen statt sofort wegschicken ---
                 NPC_Order npcOrder = npc.GetComponent<NPC_Order>();
                 
                 if (npcOrder != null)
                 {
                     if (npcOrder.currentState == NPC_Order.OrderState.WantsToOrder)
                     {
-                        // UI Menü öffnen!
+                        // UI Menü öffnen, um die Bestellung anzunehmen!
                         OrderUIManager.Instance.OpenOrderMenu(npcOrder);
                     }
                     else if (npcOrder.currentState == NPC_Order.OrderState.WaitingForFood)
                     {
-                        // HIER KOMMT SPÄTER DIE PIZZA-ÜBERGABE REIN!
-                        // Für den Moment simulieren wir, dass er die Pizza bekommt und glücklich geht:
-                        Debug.Log("Hier ist deine Pizza! (Platzhalter)");
-                        npcOrder.currentState = NPC_Order.OrderState.Done;
-                        npcOrder.timerBubble.SetActive(false); // Timer ausblenden
-                        npc.BedienungErfolgt(); // NPC verlässt den Laden
+                        Debug.Log("Der Kunde wartet auf sein Essen! Wirf ihm die fertige Pizza zu!");
                     }
                 }
             }
