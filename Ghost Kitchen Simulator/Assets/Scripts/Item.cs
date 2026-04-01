@@ -4,7 +4,14 @@ public class Item : MonoBehaviour
 {
     private Rigidbody rb;
     private Collider col;
+    [SerializeField] private bool canBePickedUp = true;
     public bool isBurnt = false; // Neue Variable, um den Zustand des Items zu verfolgen
+    public bool CanBePickedUp => canBePickedUp;
+
+    public void SetPickupEnabled(bool enabled)
+    {
+        canBePickedUp = enabled;
+    }
 
     void Awake()
     {
@@ -14,8 +21,10 @@ public class Item : MonoBehaviour
 
     public void PickUp(Transform holdPoint)
     {
-        rb.isKinematic = true; 
-        col.enabled = false;   
+        if (!canBePickedUp) return;
+
+        if (rb != null) rb.isKinematic = true;
+        if (col != null) col.enabled = false;
         transform.SetParent(holdPoint);
 
         Vector3 visualCenterOffset = Vector3.zero;
@@ -30,10 +39,10 @@ public class Item : MonoBehaviour
 
     public void Drop(Vector3 forceDirection, float force)
     {
-        rb.isKinematic = false;
-        col.enabled = true;
+        if (rb != null) rb.isKinematic = false;
+        if (col != null) col.enabled = true;
         transform.SetParent(null);
         
-        rb.AddForce(forceDirection * force, ForceMode.Impulse);
+        if (rb != null) rb.AddForce(forceDirection * force, ForceMode.Impulse);
     }
 }
