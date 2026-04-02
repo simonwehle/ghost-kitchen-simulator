@@ -9,6 +9,7 @@ public class PlayerInteraction : MonoBehaviour
     public Transform holdPoint;
     public LayerMask interactableLayer;
     public float throwForce = 20f; 
+    public float dropForce = 1f;
 
     [Header("Crosshair UI")]
     public GameObject crosshair; // Zieh dein Crosshair-Image hier rein
@@ -156,6 +157,9 @@ public class PlayerInteraction : MonoBehaviour
             {
                 currentItem = item;
                 currentItem.PickUp(holdPoint);
+
+                PizzaDoughHandler dough = currentItem.GetComponent<PizzaDoughHandler>();
+                if (dough != null) dough.OnPickedUp();
             }
         }
     }
@@ -164,8 +168,13 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (currentItem != null)
         {
-            currentItem.Drop(transform.forward, 1f);
+            PizzaDoughHandler dough = currentItem.GetComponent<PizzaDoughHandler>();
+            if (dough != null) dough.OnDropped();
+            
+            currentItem.Drop(transform.forward, dropForce);
             currentItem = null;
+            
+            
         }
     }
 

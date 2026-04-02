@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerInteractionHouse : MonoBehaviour
+public class PlayerInteractionNPC : MonoBehaviour
 {
     // Singleton für leichten Zugriff von anderen Scripts (z.B. UIManager)
-    public static PlayerInteractionHouse Instance { get; private set; }
+    public static PlayerInteractionNPC Instance { get; private set; }
 
     [Header("Interaction")]
     public float interaktionsReichweite = 5f;
@@ -81,7 +81,21 @@ public class PlayerInteractionHouse : MonoBehaviour
             {
                 Debug.Log($"Serving customer at the counter: {npc.name}");
                 npc.SchaueSpielerAn(transform);
-                npc.BedienungErfolgt();
+
+                NPC_Order npcOrder = npc.GetComponent<NPC_Order>();
+                
+                if (npcOrder != null)
+                {
+                    if (npcOrder.currentState == NPC_Order.OrderState.WantsToOrder)
+                    {
+                        // UI Menü öffnen, um die Bestellung anzunehmen!
+                        OrderUIManager.Instance.OpenOrderMenu(npcOrder);
+                    }
+                    else if (npcOrder.currentState == NPC_Order.OrderState.WaitingForFood)
+                    {
+                        Debug.Log("Der Kunde wartet auf sein Essen! Wirf ihm die fertige Pizza zu!");
+                    }
+                }
             }
             else
             {

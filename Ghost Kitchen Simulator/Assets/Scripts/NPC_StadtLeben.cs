@@ -47,7 +47,30 @@ public class NPC_StadtLeben : MonoBehaviour
 
     void Start() { hauptRoutine = StartCoroutine(NPCHauptSchleife()); }
 
-    void Update() { UpdateAnimation(); }
+    void Update() 
+    { 
+        UpdateAnimation(); 
+
+        // --- NEU: Prüfen, ob wir an der Kasse stehen und bestellen wollen ---
+        if (aktuellerStatus == NPCStatus.InWarteschlange && NPCShoppingManager.Instance != null)
+        {
+            // Sind wir Platz 1?
+            if (NPCShoppingManager.Instance.GetAktuellenKunden() == this)
+            {
+                NPC_Order orderModul = GetComponent<NPC_Order>();
+                
+                // Hat er noch nicht bestellt?
+                if (orderModul != null && orderModul.currentState == NPC_Order.OrderState.Idle)
+                {
+                    // Ist er auch wirklich am Wegpunkt angekommen (steht still)?
+                    if (!agent.pathPending && agent.remainingDistance <= warteToleranz)
+                    {
+                        orderModul.GenerateOrder(); // Zeigt das "?" an!
+                    }
+                }
+            }
+        }
+    }
 
     private void UpdateAnimation()
     {
@@ -193,6 +216,9 @@ public class NPC_StadtLeben : MonoBehaviour
 
     IEnumerator EinkaufsRoutine()
     {
+        // --- FIX: Wir holen uns das Modul nur EINMAL ganz am Anfang ---
+        NPC_Order orderModul = GetComponent<NPC_Order>();
+
         // 1. Zuerst nur das Ziel setzen, aber Status auf "Unterwegs" lassen!
         if (NPCShoppingManager.Instance.ladenEingang == null) 
         { 
@@ -208,7 +234,7 @@ public class NPC_StadtLeben : MonoBehaviour
         }
         yield return null; 
 
-        // 2. Warten, bis er WIRKLICH an der Ladentür angekommen ist - ELEGANT GELÖST
+        // 2. Warten, bis er WIRKLICH an der Ladentür angekommen ist
         yield return new WaitUntil(() => 
             agent != null && 
             !agent.pathPending && 
@@ -223,12 +249,11 @@ public class NPC_StadtLeben : MonoBehaviour
         {
             Debug.Log($"[{gameObject.name}] Am Eingang angekommen: Platz frei.");
             
-            // Erst wenn er sich anstellt, ändert sich der Status!
             Transform punkt = NPCShoppingManager.Instance.Anstellen(this);
             
             if (punkt != null)
             {
-                aktuellerStatus = NPCStatus.InWarteschlange; // Status erst HIER setzen
+                aktuellerStatus = NPCStatus.InWarteschlange; 
                 GeheZuWartepunkt(punkt);
                 
                 while (agent.pathPending || agent.remainingDistance > warteToleranz) yield return null;
@@ -237,8 +262,39 @@ public class NPC_StadtLeben : MonoBehaviour
                 float meineGeduld = NPCShoppingManager.Instance.GetRandomGeduld();
                 float warteBeginn = Time.time;
                 
-                while (aktuellerStatus == NPCStatus.InWarteschlange && (Time.time - warteBeginn) < meineGeduld)
+                // --- NEUE, INTELLIGENTE WARTESCHLEIFE ---
+                while (aktuellerStatus == NPCStatus.InWarteschlange)
+                {
+                    if (orderModul != null)
+                    {
+                        // Phase 1: In der Schlange stehen (Timer 1 läuft ab)
+                        if (orderModul.currentState == NPC_Order.OrderState.Idle || 
+                            orderModul.currentState == NPC_Order.OrderState.WantsToOrder)
+                        {
+                            if (Time.time - warteBeginn > meineGeduld)
+                            {
+                                Debug.Log($"[{gameObject.name}] Wurde ignoriert und verlässt die Schlange (Timer 1).");
+                                break; 
+                            }
+                        }
+                        // Phase 2: Bestellung ist aufgegeben -> Timer 1 wird durch das Überspringen effektiv ausgesetzt!
+                        
+                        // Phase 3: Essen erhalten ODER zu lange aufs Essen gewartet (Timer 2)
+                        else if (orderModul.currentState == NPC_Order.OrderState.Done)
+                        {
+                            Debug.Log($"[{gameObject.name}] Ladenbesuch beendet. Geht nach Hause/wandert weiter.");
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // Fallback ohne Bestell-Modul
+                        if (Time.time - warteBeginn > meineGeduld) break;
+                    }
+                    
                     yield return new WaitForSeconds(0.5f);
+                }
+                // ----------------------------------------
             }
         }
         else
@@ -246,11 +302,18 @@ public class NPC_StadtLeben : MonoBehaviour
             Debug.Log($"[{gameObject.name}] Laden voll. Gehe weiter.");
         }
         
-        // 4. Aufräumen
+        // 4. Aufräumen (Rauswurf wird jetzt automatisch hier gehandhabt)
         if (agent != null) agent.updateRotation = true; 
         NPCShoppingManager.Instance.EntferneKunde(this);
         aktuellerStatus = NPCStatus.Unterwegs;
-    }
+        
+        // --- NEU: Den Bestell-Status für den nächsten Einkauf zurücksetzen! ---
+        // Da wir orderModul oben schon deklariert haben, rufen wir es hier nur noch ab.
+        if (orderModul != null)
+        {
+            orderModul.ResetOrder();
+        }
+    }   
 
     public void BedienungErfolgt() 
     { 
