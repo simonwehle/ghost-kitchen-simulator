@@ -117,7 +117,10 @@ public class PlayerInteraction : MonoBehaviour
             StorageCabinetInteract cabinet = hit.collider.GetComponentInParent<StorageCabinetInteract>();
             if (cabinet != null && cabinet.HasItemPrefab)
             {
-                return cabinet.TrySpawnItem(this);
+                if (cabinet.TrySpawnItem(this, hit))
+                {
+                    return true;
+                }
             }
 
             OvenController oven = hit.collider.GetComponentInParent<OvenController>();

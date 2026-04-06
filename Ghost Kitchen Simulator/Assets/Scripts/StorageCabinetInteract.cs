@@ -5,11 +5,20 @@ public class StorageCabinetInteract : MonoBehaviour
     [Header("Spawner Settings")]
     [SerializeField] private Item itemPrefab;
     [SerializeField] private Transform spawnPoint;
+    [SerializeField] private float maxInteractionDistance = 1.0f;
+    [Tooltip("Only interact if hit distance is within this range (blocks back/far side)")]
+    
     public bool HasItemPrefab => itemPrefab != null;
 
-    public bool TrySpawnItem(PlayerInteraction player)
+    public bool TrySpawnItem(PlayerInteraction player, RaycastHit hit)
     {
         if (player == null)
+        {
+            return false;
+        }
+
+        // Only allow if hit is close enough (blocks the opposite back side)
+        if (hit.distance > maxInteractionDistance)
         {
             return false;
         }
