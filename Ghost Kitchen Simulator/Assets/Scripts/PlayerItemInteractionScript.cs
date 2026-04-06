@@ -114,6 +114,12 @@ public class PlayerInteraction : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, interactionDistance, interactableLayer))
         {
+            StorageCabinetInteract cabinet = hit.collider.GetComponentInParent<StorageCabinetInteract>();
+            if (cabinet != null && cabinet.HasItemPrefab)
+            {
+                return cabinet.TrySpawnItem(this);
+            }
+
             OvenController oven = hit.collider.GetComponentInParent<OvenController>();
             if (oven != null)
             {
@@ -153,7 +159,8 @@ public class PlayerInteraction : MonoBehaviour
         if (Physics.Raycast(transform.position, transform.forward, out hit, interactionDistance, interactableLayer))
         {
             Item item = hit.collider.GetComponent<Item>();
-            if (item != null)
+
+            if (item != null && item.CanBePickedUp)
             {
                 currentItem = item;
                 currentItem.PickUp(holdPoint);
