@@ -10,7 +10,6 @@ public class MoneyUI : MonoBehaviour
     {
         moneyText.text = "Money: "
             + moneyManager.currentMoney
-            + " / "
-            + moneyManager.targetMoney;
+            + "$";
     }
 }

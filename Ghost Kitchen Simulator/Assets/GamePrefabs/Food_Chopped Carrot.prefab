@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4402700560510247150}
   - component: {fileID: 3090651085042015832}
   - component: {fileID: 122916321821268086}
+  - component: {fileID: 1090904345408853165}
   m_Layer: 9
   m_Name: Food_Chopped Carrot
   m_TagString: Topping
@@ -153,4 +154,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08cb872bd76854d27a4a9178d44d2ab5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
+  canBePickedUp: 1
   isBurnt: 0
+--- !u!114 &1090904345408853165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3830048097005647823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87869c3f56ed54f6884b7a41ec705c73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToppingItem
+  toppingType: {fileID: 11400000, guid: 10dd44fb9ddc34c9caff9dbf376ff9a8, type: 2}

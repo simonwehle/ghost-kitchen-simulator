@@ -14,16 +14,5 @@ public class OrderUI : MonoBehaviour
 
     public void Update()
     {
-        for (int i = 0; i < orderTexts.Length; i++)
-        {
-            if (i < orderManager.activeOrders.Count)
-            {
-                orderTexts[i].text = orderManager.activeOrders[i].GetDisplayText();
-            }
-            else
-            {
-                orderTexts[i].text = "";
-            }
-        }
     }
 }

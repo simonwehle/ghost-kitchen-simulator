@@ -19,8 +19,8 @@ public class NPCShoppingManager : MonoBehaviour
     [Range(0, 100)] public float einkaufsWahrscheinlichkeit = 20f;
     
     [Tooltip("How long does a customer wait at the counter?")]
-    public float minKundenGeduld = 20f;
-    public float maxKundenGeduld = 40f;
+    public float minKundenGeduld = 90f;
+    public float maxKundenGeduld = 120f;
 
     private List<NPC_StadtLeben> wartendeNPCs = new List<NPC_StadtLeben>();
 

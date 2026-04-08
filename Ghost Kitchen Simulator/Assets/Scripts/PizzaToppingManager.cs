@@ -4,32 +4,31 @@ using System.Collections.Generic;
 public class PizzaToppingManager : MonoBehaviour
 {
     [Header("Pizza Data")]
-    public List<string> toppingsOnPizza = new List<string>(); // Speichert die Namen der Beläge
+    public List<ToppingType> toppingsOnPizza = new List<ToppingType>();
 
     // Wird von der ToppingZone aufgerufen
     public void AddTopping(GameObject topping)
     {
-        // 1. Speichern: Welches Topping ist das? (Nutzt den Namen des Objekts oder ein Item-Script)
-        string toppingName = topping.name.Replace("(Clone)", "").Trim();
-        toppingsOnPizza.Add(toppingName);
-
-        // 2. Parenting: Die Pizza wird der neue "Papa"
-        topping.transform.SetParent(this.transform);
-
-        // 3. Physik deaktivieren
-        // Hitbox (Collider) ausmachen
-        if (topping.TryGetComponent<Collider>(out Collider col))
+        ToppingItem item = topping.GetComponent<ToppingItem>();
+        if (item == null || item.toppingType == null)
         {
-            col.enabled = false;
+            Debug.LogWarning($"Topping '{topping.name}' has no ToppingItem component or ToppingType assigned — skipping.");
+            return;
         }
 
-        // Rigidbody ausschalten, damit es nicht mehr fällt oder rollt
+        toppingsOnPizza.Add(item.toppingType);
+
+        topping.transform.SetParent(this.transform);
+
+        if (topping.TryGetComponent<Collider>(out Collider col))
+            col.enabled = false;
+
         if (topping.TryGetComponent<Rigidbody>(out Rigidbody rb))
         {
             rb.isKinematic = true;
             rb.linearVelocity = Vector3.zero;
         }
 
-        Debug.Log($"Topping hinzugefügt: {toppingName}. Anzahl insgesamt: {toppingsOnPizza.Count}");
+        Debug.Log($"Topping hinzugefügt: {item.toppingType.displayName}. Gesamt: {toppingsOnPizza.Count}");
     }
 }

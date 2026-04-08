@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI; 
+using UnityEngine.UI;
 using System.Collections.Generic;
 
 public class NPC_Order : MonoBehaviour
@@ -8,14 +8,14 @@ public class NPC_Order : MonoBehaviour
     public OrderState currentState = OrderState.Idle;
 
     [Header("UI Referenzen (Am NPC)")]
-    [HideInInspector] public GameObject canvas; 
-    [HideInInspector] public GameObject questionBubble; 
-    [HideInInspector] public GameObject timerBubble;    
-    [HideInInspector] public Image timerFillImage;      
+    [HideInInspector] public GameObject canvas;
+    [HideInInspector] public GameObject questionBubble;
+    [HideInInspector] public GameObject timerBubble;
+    [HideInInspector] public Image timerFillImage;
 
     [Header("Bestellung")]
-    public List<string> availableToppings = new List<string> { "Salami", "Pilze", "Schinken" };
-    public List<string> wantedToppings = new List<string>();
+    public List<ToppingType> availableToppings = new List<ToppingType>();
+    public List<ToppingType> wantedToppings = new List<ToppingType>();
 
     [Header("Wartezeit")]
     private float maxWaitTime;
@@ -33,23 +33,23 @@ public class NPC_Order : MonoBehaviour
     {
         // 1. Sucht den Canvas in den Unterobjekten dieses NPCs
         Canvas gefundenesCanvas = GetComponentInChildren<Canvas>();
-        
+
         if (gefundenesCanvas != null)
         {
             canvas = gefundenesCanvas.gameObject;
 
             // 2. Sucht in der ersten Ebene unter dem Canvas nach exakten Namen
-            Transform qBubble = canvas.transform.Find("QuestionBubble"); 
+            Transform qBubble = canvas.transform.Find("QuestionBubble");
             if (qBubble != null) questionBubble = qBubble.gameObject;
 
             Transform tBubble = canvas.transform.Find("TimerBubble");
-            if (tBubble != null) 
+            if (tBubble != null)
             {
                 timerBubble = tBubble.gameObject;
                 Transform tFill = timerBubble.transform.Find("TimerCircle");
                 // 3. Findet das Image (den Ladebalken) direkt in der TimerBubble
                 if (tFill != null) timerFillImage = tFill.GetComponent<Image>();
-                
+
             }
         }
         else
@@ -80,13 +80,13 @@ public class NPC_Order : MonoBehaviour
 
                 // 2. Skalierung basierend auf der Distanz
                 float distanz = Vector3.Distance(canvas.transform.position, mainCamera.position);
-                
+
                 // Mathf.InverseLerp berechnet prozentual (0.0 bis 1.0), wo wir uns zwischen minDistance und maxDistance befinden
                 float t = Mathf.InverseLerp(minDistance, maxDistance, distanz);
-                
+
                 // Mathf.Lerp wandelt diesen Prozentwert in die tatsächliche Skalierung (1 bis 2) um
                 float aktuellesScale = Mathf.Lerp(minScale, maxScale, t);
-                
+
                 // Wende die neue Skalierung auf den Canvas an
                 canvas.transform.localScale = new Vector3(aktuellesScale, aktuellesScale, aktuellesScale);
             }
@@ -100,8 +100,8 @@ public class NPC_Order : MonoBehaviour
             if (currentWaitTime <= 0)
             {
                 Debug.Log($"{gameObject.name} hat zu lange aufs Essen gewartet und ist wütend gegangen (Timer 2)!");
-                
-                currentState = OrderState.Done; 
+
+                currentState = OrderState.Done;
                 timerBubble.SetActive(false);
             }
         }
@@ -114,12 +114,12 @@ public class NPC_Order : MonoBehaviour
         timerBubble.SetActive(false);
 
         wantedToppings.Clear();
-        int amountOfToppings = Random.Range(1, 3); 
+        int amountOfToppings = Random.Range(1, 3);
 
         for (int i = 0; i < amountOfToppings; i++)
         {
-            string randomTopping = availableToppings[Random.Range(0, availableToppings.Count)];
-            if (!wantedToppings.Contains(randomTopping)) 
+            ToppingType randomTopping = availableToppings[Random.Range(0, availableToppings.Count)];
+            if (!wantedToppings.Contains(randomTopping))
             {
                 wantedToppings.Add(randomTopping);
             }
@@ -128,21 +128,21 @@ public class NPC_Order : MonoBehaviour
 
     public string GetOrderText()
     {
-        string toppingText = string.Join(" und ", wantedToppings);
+        string toppingText = string.Join(" und ", wantedToppings.ConvertAll(t => t.displayName));
         return $"Hallo! Ich möchte bitte eine Pizza mit {toppingText}.";
     }
 
     public void AcceptOrder()
     {
         currentState = OrderState.WaitingForFood;
-        
+
         if (NPCShoppingManager.Instance != null)
         {
             maxWaitTime = NPCShoppingManager.Instance.GetRandomGeduld();
         }
         else
         {
-            maxWaitTime = 30f; 
+            maxWaitTime = 30f;
         }
 
         currentWaitTime = maxWaitTime;
@@ -190,42 +190,47 @@ public class NPC_Order : MonoBehaviour
         // 2. Ist das fliegende Objekt wirklich eine fertige Pizza?
         if (trefferObjekt.CompareTag("Pizza"))
         {
-            Debug.Log($"Volltreffer! {gameObject.name} hat die Pizza gefangen!");
+            // 3. Wie viele gewünschte Toppings sind auf der Pizza?
+            PizzaToppingManager pizzaManager = trefferObjekt.GetComponent<PizzaToppingManager>();
+            int matched = 0;
+            if (pizzaManager != null)
+            {
+                foreach (ToppingType wanted in wantedToppings)
+                {
+                    if (pizzaManager.toppingsOnPizza.Contains(wanted))
+                        matched++;
+                }
+            }
 
-            // 3. Pizza sofort verschwinden lassen (wurde "angenommen")
+            float toppingScore = wantedToppings.Count > 0 ? (float)matched / wantedToppings.Count : 1f;
+            Debug.Log($"Volltreffer! {gameObject.name} hat die Pizza gefangen! Toppings: {matched}/{wantedToppings.Count}");
+
+            // 4. Pizza sofort verschwinden lassen (wurde "angenommen")
             Destroy(trefferObjekt);
 
-            // 4. Dynamisches Bezahlen je nach Wartezeit!
+            // 5. Dynamisches Bezahlen je nach Wartezeit und Toppings
             MoneyManager kasse = Object.FindFirstObjectByType<MoneyManager>();
             if (kasse != null)
             {
-                int grundPreis = 15; 
-                int finalerPreis = grundPreis;
-                
-                // Wir berechnen, wie viel Prozent des Timers noch übrig sind (0.0 bis 1.0)
+                int grundPreis = 15;
                 float verbleibendeZeitProzent = currentWaitTime / maxWaitTime;
 
+                float timerMultiplier;
                 if (verbleibendeZeitProzent > 0.6f)
-                {
-                    // GRÜN: Volles Gehalt
-                    finalerPreis = grundPreis;
-                }
+                    timerMultiplier = 1f;       // GRÜN: volles Gehalt
                 else if (verbleibendeZeitProzent > 0.3f)
-                {
-                    // GELB: 1/3 Abzug (Spieler bekommt ca. 66% -> 10$)
-                    finalerPreis = Mathf.RoundToInt(grundPreis * 0.66f);
-                }
+                    timerMultiplier = 0.66f;    // GELB: ca. 66%
                 else
-                {
-                    // ROT: 2/3 Abzug (Spieler bekommt ca. 33% -> 5$)
-                    finalerPreis = Mathf.RoundToInt(grundPreis * 0.33f);
-                }
+                    timerMultiplier = 0.33f;    // ROT: ca. 33%
+
+                // Mindestbetrag von 2$ damit der Spieler nie komplett leer ausgeht
+                int finalerPreis = Mathf.Max(2, Mathf.RoundToInt(grundPreis * timerMultiplier * toppingScore));
 
                 kasse.AddMoney(finalerPreis);
-                Debug.Log($"Verkauft für {finalerPreis}$! (Verbleibende Geduld: {verbleibendeZeitProzent * 100:0}%)");
+                Debug.Log($"Verkauft für {finalerPreis}$! (Timer: {verbleibendeZeitProzent * 100:0}%, Toppings: {toppingScore * 100:0}%)");
             }
 
-            // 5. NPC ist zufrieden und geht
+            // 6. NPC ist zufrieden und geht
             currentState = OrderState.Done;
             timerBubble.SetActive(false);
         }

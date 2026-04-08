@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2548302513672568199}
   - component: {fileID: 6704143628243681521}
   - component: {fileID: 6098420033535845283}
+  - component: {fileID: -2619589025382826242}
   m_Layer: 9
   m_Name: Food_Sushi
   m_TagString: Topping
@@ -153,4 +154,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08cb872bd76854d27a4a9178d44d2ab5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
+  canBePickedUp: 1
   isBurnt: 0
+--- !u!114 &-2619589025382826242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5998421200528742155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87869c3f56ed54f6884b7a41ec705c73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToppingItem
+  toppingType: {fileID: 11400000, guid: 089bf27cebf96474683851439c5c8d71, type: 2}

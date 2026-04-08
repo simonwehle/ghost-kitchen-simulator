@@ -11,13 +11,13 @@ GameObject:
   - component: {fileID: 3586059281853360455}
   - component: {fileID: 767601974205716792}
   - component: {fileID: 2977099885404576366}
-  - component: {fileID: 4107030757891434184}
   - component: {fileID: 8251634334605587361}
   - component: {fileID: 1332988453170414542}
   - component: {fileID: 7424893718814636548}
-  m_Layer: 8
+  - component: {fileID: 264062121107788894}
+  m_Layer: 9
   m_Name: Food_Chopped Tomato
-  m_TagString: Untagged
+  m_TagString: Topping
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -94,28 +94,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4107030757891434184
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2993951979438890727}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3301885043010431249, guid: 59ec72c0f63004042b0ce461221b06ac, type: 3}
 --- !u!54 &8251634334605587361
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -155,6 +133,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08cb872bd76854d27a4a9178d44d2ab5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Item
+  canBePickedUp: 1
+  isBurnt: 0
 --- !u!65 &7424893718814636548
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -176,3 +156,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.27390662, y: 0.14907193, z: 0.2005336}
   m_Center: {x: -0.003936574, y: 0.064865366, z: 0.008911959}
+--- !u!114 &264062121107788894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2993951979438890727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87869c3f56ed54f6884b7a41ec705c73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToppingItem
+  toppingType: {fileID: 11400000, guid: dd9fdf011bedc414aab5306a1716a947, type: 2}
