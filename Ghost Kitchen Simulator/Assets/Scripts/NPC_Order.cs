@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Unity.Services.Analytics;
 
 public class NPC_Order : MonoBehaviour
 {
@@ -28,6 +29,10 @@ public class NPC_Order : MonoBehaviour
     public float maxScale = 2f;     // ...ist die Größe 2x
 
     private Transform mainCamera;
+
+    // Tracking
+    private float orderStartTime;
+    private bool orderTimerRunning = false;
 
     void Awake()
     {
@@ -97,6 +102,20 @@ public class NPC_Order : MonoBehaviour
             currentWaitTime -= Time.deltaTime;
             UpdateTimerVisuals();
 
+            // track failed order
+            if (orderTimerRunning)
+            {
+                OrderFailedEvent orderFailedEvent = new OrderFailedEvent
+                {
+                    WaitTime = maxWaitTime,
+                    ToppingsRequested = wantedToppings.Count
+                };
+
+                AnalyticsService.Instance.RecordEvent(orderFailedEvent);
+
+                orderTimerRunning = false;
+            }
+
             if (currentWaitTime <= 0)
             {
                 Debug.Log($"{gameObject.name} hat zu lange aufs Essen gewartet und ist wütend gegangen (Timer 2)!");
@@ -146,6 +165,10 @@ public class NPC_Order : MonoBehaviour
         }
 
         currentWaitTime = maxWaitTime;
+
+        // start tracking
+        orderStartTime = Time.time;
+        orderTimerRunning = true;
 
         questionBubble.SetActive(false);
         timerBubble.SetActive(true);
@@ -228,6 +251,22 @@ public class NPC_Order : MonoBehaviour
 
                 kasse.AddMoney(finalerPreis);
                 Debug.Log($"Verkauft für {finalerPreis}$! (Timer: {verbleibendeZeitProzent * 100:0}%, Toppings: {toppingScore * 100:0}%)");
+
+                // track order completion time
+                if (orderTimerRunning)
+                {
+                    OrderCompletedEvent orderCompletedEvent = new OrderCompletedEvent
+                    {
+                        CompletionTime = Time.time - orderStartTime,
+                        ToppingsRequested = wantedToppings.Count,
+                        ToppingsMatched = matched,
+                        MoneyEarned = finalerPreis
+                    };
+
+                    AnalyticsService.Instance.RecordEvent(orderCompletedEvent);
+
+                    orderTimerRunning = false;
+                }
             }
 
             // 6. NPC ist zufrieden und geht
