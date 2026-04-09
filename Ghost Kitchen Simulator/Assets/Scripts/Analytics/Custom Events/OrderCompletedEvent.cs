@@ -1,6 +1,6 @@
 public class OrderCompletedEvent : Unity.Services.Analytics.Event
 {
-    public OrderCompletedEvent() : base("order_completed")
+    public OrderCompletedEvent() : base("order_completion")
     {
     }
 
