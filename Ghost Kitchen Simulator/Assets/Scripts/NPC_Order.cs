@@ -147,8 +147,8 @@ public class NPC_Order : MonoBehaviour
 
     public string GetOrderText()
     {
-        string toppingText = string.Join(" und ", wantedToppings.ConvertAll(t => t.displayName));
-        return $"Hallo! Ich möchte bitte eine Pizza mit {toppingText}.";
+        string toppingText = string.Join(" and ", wantedToppings.ConvertAll(t => t.displayName));
+        return $"Hi, can I get a Pizza with {toppingText}.";
     }
 
     public void AcceptOrder()
